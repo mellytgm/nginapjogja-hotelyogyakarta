@@ -2183,131 +2183,220 @@ function buildLpFooter() {
 }
 
 
-/* ================= FINAL MOBILE UX: DRAG SHEET + COMPACT POPUP ================= */
-function isMobileWebGIS() {
-  return window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
-}
+/* ================= FINAL MOBILE UX v2 — SMOOTH SHEET, COMPACT POPUP, DRAG PANELS ================= */
+(function () {
+  const mq = window.matchMedia("(max-width: 768px)");
+  let sheetReady = false;
+  let lastSheetPx = 64;
 
-function setMobileSheetHeight(px, animate = true) {
-  const sidebar = document.querySelector(".app-sidebar");
-  if (!sidebar || !isMobileWebGIS()) return;
-
-  const vh = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
-  const min = 56;
-  const max = Math.round(vh * 0.78);
-  const h = Math.max(min, Math.min(max, px));
-
-  sidebar.classList.toggle("is-dragging", !animate);
-  sidebar.style.height = h + "px";
-  document.documentElement.style.setProperty("--mobile-sheet-px", h + "px");
-
-  window.clearTimeout(sidebar._leafletResizeTimer);
-  sidebar._leafletResizeTimer = window.setTimeout(() => {
-    if (map) map.invalidateSize();
-    updateMobileMapState();
-  }, animate ? 220 : 20);
-}
-
-function snapMobileSheet(px) {
-  const vh = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
-  const points = [58, Math.round(vh * 0.32), Math.round(vh * 0.58), Math.round(vh * 0.78)];
-  let best = points[0];
-  for (const p of points) {
-    if (Math.abs(px - p) < Math.abs(px - best)) best = p;
+  function isMobile() {
+    return mq.matches;
   }
-  setMobileSheetHeight(best, true);
-}
 
-function initMobileBottomSheetFinal() {
-  const sidebar = document.querySelector(".app-sidebar");
-  if (!sidebar || sidebar.dataset.mobileSheetReady === "1") return;
-  sidebar.dataset.mobileSheetReady = "1";
+  function viewportH() {
+    return (window.visualViewport && window.visualViewport.height) || window.innerHeight || 720;
+  }
 
-  const handle = document.createElement("div");
-  handle.className = "mobile-sheet-handle";
-  handle.innerHTML = `<span></span>`;
-  sidebar.prepend(handle);
+  function sidebar() {
+    return document.querySelector(".app-sidebar");
+  }
 
-  let startY = 0;
-  let startH = 0;
-  let moved = false;
+  function setVar(px) {
+    document.documentElement.style.setProperty("--mobile-sheet-px", `${Math.round(px)}px`);
+  }
 
-  const startDrag = (clientY) => {
-    if (!isMobileWebGIS()) return;
-    moved = false;
-    startY = clientY;
-    startH = sidebar.getBoundingClientRect().height || 58;
-    sidebar.classList.add("is-dragging");
-  };
+  function setSheet(px, opts = {}) {
+    const sb = sidebar();
+    if (!sb || !isMobile()) return;
+    const h = viewportH();
+    const min = 48;
+    const max = Math.round(h * 0.82);
+    const val = Math.max(min, Math.min(max, px));
+    lastSheetPx = val;
+    sb.style.height = `${val}px`;
+    setVar(val);
+    sb.classList.toggle("sheet-dragging", !!opts.dragging);
+    window.clearTimeout(sb._resizeT);
+    sb._resizeT = window.setTimeout(() => {
+      try { if (map) map.invalidateSize(); } catch {}
+      updateMobileState();
+      placeFloatingPanels();
+    }, opts.fast ? 16 : 180);
+  }
 
-  const moveDrag = (clientY, ev) => {
-    if (!isMobileWebGIS() || !startY) return;
-    const delta = startY - clientY;
-    if (Math.abs(delta) > 4) moved = true;
-    setMobileSheetHeight(startH + delta, false);
-    if (ev && ev.cancelable) ev.preventDefault();
-  };
+  function snap(px) {
+    const h = viewportH();
+    const points = [50, Math.round(h * 0.25), Math.round(h * 0.52), Math.round(h * 0.82)];
+    let best = points[0];
+    for (const p of points) if (Math.abs(px - p) < Math.abs(px - best)) best = p;
+    setSheet(best);
+  }
 
-  const endDrag = () => {
-    if (!isMobileWebGIS() || !startY) return;
-    const h = sidebar.getBoundingClientRect().height || 58;
-    sidebar.classList.remove("is-dragging");
-    if (!moved) {
-      const vh = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
-      if (h < vh * 0.20) setMobileSheetHeight(Math.round(vh * 0.58), true);
-      else if (h < vh * 0.62) setMobileSheetHeight(Math.round(vh * 0.78), true);
-      else setMobileSheetHeight(58, true);
-    } else {
-      snapMobileSheet(h);
+  function ensureHandle() {
+    const sb = sidebar();
+    if (!sb || sb.querySelector(".mobile-sheet-handle")) return;
+    const handle = document.createElement("div");
+    handle.className = "mobile-sheet-handle";
+    handle.innerHTML = `<span aria-hidden="true"></span>`;
+    sb.insertBefore(handle, sb.firstChild);
+
+    let startY = 0, startH = 0, moved = false, active = false;
+    const begin = (y) => {
+      if (!isMobile()) return;
+      active = true;
+      moved = false;
+      startY = y;
+      startH = sb.getBoundingClientRect().height || lastSheetPx || 50;
+      sb.classList.add("sheet-dragging");
+    };
+    const move = (y, ev) => {
+      if (!active) return;
+      const diff = startY - y;
+      if (Math.abs(diff) > 3) moved = true;
+      setSheet(startH + diff, { dragging: true, fast: true });
+      if (ev && ev.cancelable) ev.preventDefault();
+    };
+    const end = () => {
+      if (!active) return;
+      active = false;
+      sb.classList.remove("sheet-dragging");
+      const cur = sb.getBoundingClientRect().height || lastSheetPx;
+      if (!moved) {
+        const h = viewportH();
+        if (cur < h * 0.18) setSheet(Math.round(h * 0.52));
+        else if (cur < h * 0.64) setSheet(Math.round(h * 0.82));
+        else setSheet(50);
+      } else snap(cur);
+    };
+
+    handle.addEventListener("touchstart", (e) => begin(e.touches[0].clientY), { passive: false });
+    handle.addEventListener("touchmove", (e) => move(e.touches[0].clientY, e), { passive: false });
+    handle.addEventListener("touchend", end, { passive: true });
+    handle.addEventListener("touchcancel", end, { passive: true });
+    handle.addEventListener("pointerdown", (e) => {
+      begin(e.clientY);
+      try { handle.setPointerCapture(e.pointerId); } catch {}
+    });
+    handle.addEventListener("pointermove", (e) => move(e.clientY, e));
+    handle.addEventListener("pointerup", end);
+    handle.addEventListener("pointercancel", end);
+  }
+
+  function updateMobileState() {
+    const mobile = isMobile();
+    document.body.classList.toggle("mobile-map", mobile);
+    const z = (typeof map !== "undefined" && map) ? map.getZoom() : 13;
+    document.body.classList.toggle("mobile-zoom-out", mobile && z <= 13);
+    document.body.classList.toggle("mobile-zoom-mid", mobile && z > 13 && z < 16);
+    document.body.classList.toggle("mobile-zoom-in", mobile && z >= 16);
+  }
+
+  function panPopupAboveSheet() {
+    if (!isMobile() || typeof map === "undefined" || !map) return;
+    setTimeout(() => {
+      try {
+        const popupEl = document.querySelector(".leaflet-popup");
+        if (!popupEl) return;
+        const r = popupEl.getBoundingClientRect();
+        const safeBottom = viewportH() - (lastSheetPx + 18);
+        if (r.bottom > safeBottom) map.panBy([0, r.bottom - safeBottom + 16], { animate: true, duration: 0.25 });
+      } catch {}
+    }, 80);
+  }
+
+  function placeFloatingPanels() {
+    if (!isMobile()) return;
+    const panels = [document.getElementById("surr-panel"), document.getElementById("dir-panel")].filter(Boolean);
+    const top = 76;
+    const bottomLimit = viewportH() - lastSheetPx - 14;
+    panels.forEach((p) => {
+      if (!p.classList.contains("open")) return;
+      if (!p.dataset.userMoved) {
+        p.style.left = "12px";
+        p.style.right = "12px";
+        p.style.top = `${top}px`;
+        p.style.bottom = "auto";
+        p.style.maxHeight = `${Math.max(120, bottomLimit - top)}px`;
+      }
+    });
+  }
+
+  function makePanelDraggable(panel, headerSelector) {
+    if (!panel || panel.dataset.dragReady === "1") return;
+    panel.dataset.dragReady = "1";
+    const header = panel.querySelector(headerSelector) || panel.firstElementChild || panel;
+    header.classList.add("mobile-floating-drag-handle");
+    let startX=0, startY=0, startLeft=0, startTop=0, active=false;
+    const begin = (x,y) => {
+      if (!isMobile()) return;
+      const r = panel.getBoundingClientRect();
+      startX=x; startY=y; startLeft=r.left; startTop=r.top; active=true;
+      panel.dataset.userMoved = "1";
+      panel.style.right = "auto";
+      panel.style.bottom = "auto";
+      panel.style.width = `${Math.min(r.width, window.innerWidth - 24)}px`;
+      panel.classList.add("floating-dragging");
+    };
+    const move = (x,y,ev) => {
+      if(!active) return;
+      const vw=window.innerWidth, vh=viewportH();
+      const w=panel.getBoundingClientRect().width, h=panel.getBoundingClientRect().height;
+      let left=startLeft + (x-startX);
+      let top=startTop + (y-startY);
+      left=Math.max(8, Math.min(vw-w-8, left));
+      top=Math.max(70, Math.min(vh-lastSheetPx-h-10, top));
+      panel.style.left = `${left}px`;
+      panel.style.top = `${top}px`;
+      if (ev && ev.cancelable) ev.preventDefault();
+    };
+    const end = () => { active=false; panel.classList.remove("floating-dragging"); };
+    header.addEventListener("touchstart", e => begin(e.touches[0].clientX, e.touches[0].clientY), {passive:false});
+    header.addEventListener("touchmove", e => move(e.touches[0].clientX, e.touches[0].clientY, e), {passive:false});
+    header.addEventListener("touchend", end, {passive:true});
+    header.addEventListener("pointerdown", e => { begin(e.clientX,e.clientY); try{header.setPointerCapture(e.pointerId)}catch{}; });
+    header.addEventListener("pointermove", e => move(e.clientX,e.clientY,e));
+    header.addEventListener("pointerup", end);
+    header.addEventListener("pointercancel", end);
+  }
+
+  function setupFloatingPanels() {
+    makePanelDraggable(document.getElementById("surr-panel"), ".surr-header");
+    makePanelDraggable(document.getElementById("dir-panel"), ".dir-panel-header");
+    placeFloatingPanels();
+  }
+
+  function init() {
+    if (!isMobile()) return;
+    ensureHandle();
+    if (!sheetReady) {
+      sheetReady = true;
+      setSheet(50);
     }
-    startY = 0;
-    startH = 0;
-  };
-
-  handle.addEventListener("touchstart", (e) => startDrag(e.touches[0].clientY), { passive: false });
-  handle.addEventListener("touchmove", (e) => moveDrag(e.touches[0].clientY, e), { passive: false });
-  handle.addEventListener("touchend", endDrag, { passive: true });
-
-  handle.addEventListener("pointerdown", (e) => {
-    if (e.pointerType === "mouse" || e.pointerType === "pen") {
-      startDrag(e.clientY);
-      handle.setPointerCapture?.(e.pointerId);
+    updateMobileState();
+    setupFloatingPanels();
+    if (typeof map !== "undefined" && map && !map._mobileUxV2) {
+      map._mobileUxV2 = true;
+      map.on("zoomend", () => { updateMobileState(); panPopupAboveSheet(); });
+      map.on("popupopen", () => { updateMobileState(); panPopupAboveSheet(); });
     }
-  });
-  handle.addEventListener("pointermove", (e) => {
-    if (startY) moveDrag(e.clientY, e);
-  });
-  handle.addEventListener("pointerup", endDrag);
-  handle.addEventListener("pointercancel", endDrag);
+  }
 
-  /* Default: hanya handle kecil supaya peta tidak ketutup */
-  if (isMobileWebGIS()) setMobileSheetHeight(58, true);
-}
+  window.addEventListener("load", init);
+  window.addEventListener("resize", () => { sheetReady = false; setTimeout(init, 80); });
+  if (window.visualViewport) window.visualViewport.addEventListener("resize", () => { setTimeout(() => { updateMobileState(); placeFloatingPanels(); panPopupAboveSheet(); }, 80); });
 
-function updateMobileMapState() {
-  if (!document.body) return;
-  const z = map ? map.getZoom() : 13;
-  const mobile = isMobileWebGIS();
-  document.body.classList.toggle("mobile-map", mobile);
-  document.body.classList.toggle("mobile-zoom-out", mobile && z <= 13);
-  document.body.classList.toggle("mobile-zoom-in", mobile && z >= 16);
-
-  const sidebar = document.querySelector(".app-sidebar");
-  if (mobile && sidebar && !sidebar.style.height) setMobileSheetHeight(58, true);
-}
-
-window.addEventListener("load", () => {
-  initMobileBottomSheetFinal();
-  updateMobileMapState();
-});
-window.addEventListener("resize", () => {
-  initMobileBottomSheetFinal();
-  updateMobileMapState();
-  if (isMobileWebGIS()) setMobileSheetHeight(58, true);
-});
-if (window.visualViewport) {
-  window.visualViewport.addEventListener("resize", () => {
-    updateMobileMapState();
-  });
-}
-
+  const wrap = (name) => {
+    const old = window[name];
+    if (typeof old !== "function" || old._mobileWrapped) return;
+    const fn = function(...args) {
+      const ret = old.apply(this, args);
+      setTimeout(() => { init(); setupFloatingPanels(); panPopupAboveSheet(); }, 120);
+      return ret;
+    };
+    fn._mobileWrapped = true;
+    window[name] = fn;
+  };
+  setTimeout(() => {
+    ["showSurroundings", "openDirPanel", "startDirectionTo"].forEach(wrap);
+  }, 0);
+})();
