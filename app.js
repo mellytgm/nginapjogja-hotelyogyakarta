@@ -2178,31 +2178,50 @@ function buildLpFooter() {
   });
   ctx.globalCompositeOperation = "source-over";
 }
-/* ================= MOBILE BOTTOM SHEET CONTROLS ================= */
-function initMobileSheetControls() {
-  if (document.querySelector(".mobile-sheet-controls")) return;
+/* ================= MOBILE DRAGGABLE BOTTOM SHEET ================= */
+function initMobileBottomSheet() {
+  if (window.innerWidth > 768) return;
 
-  const controls = document.createElement("div");
-  controls.className = "mobile-sheet-controls";
-  controls.innerHTML = `
-    <button onclick="setSheetMode('small')">Min</button>
-    <button onclick="setSheetMode('half')">Half</button>
-    <button onclick="setSheetMode('full')">Full</button>
-    <button onclick="setSheetMode('hide')">Hide</button>
-  `;
-  document.body.appendChild(controls);
+  const sidebar = document.querySelector(".app-sidebar");
+  if (!sidebar || sidebar.querySelector(".sheet-handle")) return;
+
+  const handle = document.createElement("div");
+  handle.className = "sheet-handle";
+  sidebar.prepend(handle);
+
+  let startY = 0;
+  let startHeight = 0;
+
+  const setHeight = (vh) => {
+    sidebar.style.height = `${vh}vh`;
+    document.body.style.setProperty("--sheet-height", `${vh}vh`);
+    setTimeout(() => {
+      if (map) map.invalidateSize();
+    }, 250);
+  };
+
+  setHeight(28);
+
+  handle.addEventListener("touchstart", (e) => {
+    startY = e.touches[0].clientY;
+    startHeight = sidebar.offsetHeight;
+  });
+
+  handle.addEventListener("touchmove", (e) => {
+    const y = e.touches[0].clientY;
+    const diff = startY - y;
+    const newHeightPx = startHeight + diff;
+    const vh = Math.max(12, Math.min(82, (newHeightPx / window.innerHeight) * 100));
+    setHeight(vh);
+  });
+
+  handle.addEventListener("click", () => {
+    const current = sidebar.offsetHeight / window.innerHeight * 100;
+    if (current < 35) setHeight(62);
+    else if (current < 70) setHeight(82);
+    else setHeight(20);
+  });
 }
 
-function setSheetMode(mode) {
-  document.body.classList.remove("sidebar-small", "sidebar-full", "sidebar-hide");
-
-  if (mode === "small") document.body.classList.add("sidebar-small");
-  if (mode === "full") document.body.classList.add("sidebar-full");
-  if (mode === "hide") document.body.classList.add("sidebar-hide");
-
-  setTimeout(() => {
-    if (map) map.invalidateSize();
-  }, 300);
-}
-
-window.addEventListener("load", initMobileSheetControls);
+window.addEventListener("load", initMobileBottomSheet);
+window.addEventListener("resize", initMobileBottomSheet);
