@@ -2,7 +2,7 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Yogyakarta WebGIS — Persebaran Hotel</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
@@ -24,7 +24,7 @@
     />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=mobile-stack-v6" />
   </head>
   <body>
     <!-- ═══════════════════════════════════════════════════════════
@@ -286,10 +286,14 @@
             <div class="ltoggle" id="toggle-hotels"></div>
           </div>
 
-          <!-- Layer Batas Administrasi dinonaktifkan karena boundary tidak stabil pada tampilan peta -->
+          <div class="layer-row" onclick="toggleLayer('admin')">
+            <div class="layer-row-left">
+              <div class="ldot" style="background: #e87d0d"></div>
+              <span class="lname">Batas Administrasi</span>
+            </div>
+            <div class="ltoggle" id="toggle-admin"></div>
+          </div>
         </div>
-
-  
 
         <!-- Hotel list -->
         <div
