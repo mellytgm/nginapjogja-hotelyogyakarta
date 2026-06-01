@@ -2203,3 +2203,109 @@ body {
     font-size: 0.76rem !important;
   }
 }
+/* ================= MOBILE RESPONSIVE FIX ================= */
+@media (max-width: 768px) {
+  html,
+  body {
+    overflow-x: hidden !important;
+  }
+
+  .lp-nav {
+    padding: 0.7rem 1rem !important;
+  }
+
+  .nav-links {
+    gap: 0.8rem !important;
+  }
+
+  .nav-links a {
+    font-size: 0.72rem !important;
+  }
+
+  .lp-hero {
+    min-height: 100vh !important;
+  }
+
+  .hero-content {
+    padding: 4rem 1.3rem 2rem !important;
+    max-width: 100% !important;
+  }
+
+  .hero-title {
+    font-size: 2.4rem !important;
+    line-height: 1.05 !important;
+  }
+
+  .hero-desc {
+    font-size: 0.82rem !important;
+    max-width: 100% !important;
+  }
+
+  .hero-map-side {
+    display: none !important;
+  }
+
+  .app-header {
+    height: auto !important;
+    min-height: 54px !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+
+  .app-header-center {
+    display: none !important;
+  }
+
+  .app-sidebar {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    top: auto !important;
+    width: 100% !important;
+    height: 38vh !important;
+    z-index: 999 !important;
+    border-radius: 18px 18px 0 0 !important;
+    overflow-y: auto !important;
+  }
+
+  .map-wrap,
+  #map {
+    left: 0 !important;
+    width: 100% !important;
+    height: calc(100vh - 54px) !important;
+  }
+
+  .leaflet-popup-content {
+    width: 285px !important;
+    max-width: 285px !important;
+  }
+
+  .p-title,
+  .popup-title,
+  .hotel-title,
+  .popup-card h2,
+  .popup-card h3 {
+    font-size: 1.15rem !important;
+    line-height: 1.15 !important;
+    max-width: 230px !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .popup-actions,
+  .hotel-actions,
+  .popup-buttons {
+    grid-template-columns: 1fr !important;
+  }
+
+  .modul-grid,
+  .dark-cards,
+  .coverage-grid {
+    grid-template-columns: 1fr !important;
+    display: grid !important;
+  }
+
+  .stats-strip {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
