@@ -3327,3 +3327,143 @@ body {
     font-size: 0.78rem !important;
   }
 }
+
+/* ============================================================
+   ULTRA FINAL MOBILE LANDING STACK FIX
+   Modul Analisis Spasial berurutan 1 kolom + stats tidak kepotong
+   Tempel/posisi PALING AKHIR style.css
+   ============================================================ */
+@media screen and (max-width: 768px) {
+  html,
+  body,
+  #s-landing {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  #s-landing.screen.active {
+    display: block !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  #s-landing .lp-section,
+  #s-landing .lp-section-dark,
+  #s-landing .stats-strip {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    overflow-x: hidden !important;
+  }
+
+  /* MODUL ANALISIS SPASIAL: paksa 1 kolom vertikal */
+  #s-landing .lp-section-dark .modul-grid,
+  #s-landing section.lp-section-dark .modul-grid,
+  body #s-landing .modul-grid {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 1rem 0 0 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    column-count: 1 !important;
+    grid-template-columns: none !important;
+  }
+
+  #s-landing .lp-section-dark .modul-card,
+  #s-landing section.lp-section-dark .modul-card,
+  body #s-landing .modul-card {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: unset !important;
+    margin: 0 0 1rem 0 !important;
+    padding: 1rem !important;
+    overflow: visible !important;
+    transform: none !important;
+    float: none !important;
+    clear: both !important;
+  }
+
+  #s-landing .modul-card .modul-num,
+  #s-landing .modul-card h4,
+  #s-landing .modul-card p {
+    width: 100% !important;
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+  }
+
+  #s-landing .modul-card .modul-num {
+    font-size: 0.68rem !important;
+    line-height: 1.45 !important;
+  }
+
+  #s-landing .modul-card h4 {
+    font-size: 1.05rem !important;
+    line-height: 1.25 !important;
+    margin: 0.45rem 0 0.45rem !important;
+  }
+
+  #s-landing .modul-card p {
+    font-size: 0.86rem !important;
+    line-height: 1.65 !important;
+  }
+
+  /* Stats paling bawah: 1 kolom agar WGS84 dan label tidak kepotong */
+  #s-landing .stats-strip,
+  body #s-landing .stats-strip {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 1.2rem 1rem 6rem !important;
+    overflow-x: hidden !important;
+  }
+
+  #s-landing .stat-cell {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 1rem 0 !important;
+    margin: 0 !important;
+    text-align: center !important;
+    border-bottom: 1px solid rgba(28,43,74,0.08) !important;
+  }
+
+  #s-landing .stat-cell:last-child {
+    border-bottom: none !important;
+  }
+
+  #s-landing .stat-num {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: 1.85rem !important;
+    line-height: 1.1 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+  }
+
+  #s-landing .stat-lbl {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 0.35rem !important;
+    font-size: 0.62rem !important;
+    line-height: 1.5 !important;
+    letter-spacing: 0.09em !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+  }
+}
