@@ -2203,429 +2203,337 @@ body {
     font-size: 0.76rem !important;
   }
 }
-/* ================= MOBILE RESPONSIVE FIX ================= */
-@media (max-width: 768px) {
-  html,
-  body {
-    overflow-x: hidden !important;
-  }
 
-  .lp-nav {
-    padding: 0.7rem 1rem !important;
-  }
 
-  .nav-links {
-    gap: 0.8rem !important;
-  }
-
-  .nav-links a {
-    font-size: 0.72rem !important;
-  }
-
-  .lp-hero {
-    min-height: 100vh !important;
-  }
-
-  .hero-content {
-    padding: 4rem 1.3rem 2rem !important;
-    max-width: 100% !important;
-  }
-
-  .hero-title {
-    font-size: 2.4rem !important;
-    line-height: 1.05 !important;
-  }
-
-  .hero-desc {
-    font-size: 0.82rem !important;
-    max-width: 100% !important;
-  }
-
-  .hero-map-side {
-    display: none !important;
-  }
-
-  .app-header {
-    height: auto !important;
-    min-height: 54px !important;
-    padding: 0.5rem 0.75rem !important;
-  }
-
-  .app-header-center {
-    display: none !important;
-  }
-
-  .app-sidebar {
-    position: fixed !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    top: auto !important;
-    width: 100% !important;
-    height: 38vh !important;
-    z-index: 999 !important;
-    border-radius: 18px 18px 0 0 !important;
-    overflow-y: auto !important;
-  }
-
-  .map-wrap,
-  #map {
-    left: 0 !important;
-    width: 100% !important;
-    height: calc(100vh - 54px) !important;
-  }
-
-  .leaflet-popup-content {
-    width: 285px !important;
-    max-width: 285px !important;
-  }
-
-  .p-title,
-  .popup-title,
-  .hotel-title,
-  .popup-card h2,
-  .popup-card h3 {
-    font-size: 1.15rem !important;
-    line-height: 1.15 !important;
-    max-width: 230px !important;
-    white-space: normal !important;
-    overflow-wrap: break-word !important;
-  }
-
-  .popup-actions,
-  .hotel-actions,
-  .popup-buttons {
-    grid-template-columns: 1fr !important;
-  }
-
-  .modul-grid,
-  .dark-cards,
-  .coverage-grid {
-    grid-template-columns: 1fr !important;
-    display: grid !important;
-  }
-
-  .stats-strip {
-    grid-template-columns: 1fr 1fr !important;
-  }
-}
-/* ================= MOBILE MAP FIX ================= */
-@media (max-width: 768px) {
-  .app-sidebar {
-    position: fixed !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    top: auto !important;
-    width: 100% !important;
-    height: 42vh !important;
-    z-index: 9999 !important;
-    border-radius: 22px 22px 0 0 !important;
-    overflow-y: auto !important;
-    transform: translateY(0);
-    transition: height .28s ease, transform .28s ease;
-  }
-
-  .app-sidebar::before {
-    content: "";
-    display: block;
-    width: 48px;
-    height: 5px;
-    background: rgba(255,255,255,.35);
-    border-radius: 999px;
-    margin: 10px auto 8px;
-  }
-
-  body.sidebar-small .app-sidebar {
-    height: 16vh !important;
-  }
-
-  body.sidebar-full .app-sidebar {
-    height: 82vh !important;
-  }
-
-  body.sidebar-hide .app-sidebar {
-    transform: translateY(calc(100% - 54px));
-  }
-
-  #map,
-  .map-wrap {
-    left: 0 !important;
-    width: 100% !important;
-    height: calc(100vh - 54px) !important;
-  }
-
-  .mobile-sheet-controls {
-    position: fixed;
-    right: 12px;
-    bottom: 44vh;
-    z-index: 10000;
-    display: flex;
-    gap: 6px;
-  }
-
-  .mobile-sheet-controls button {
-    border: none;
-    background: #1c2b4a;
-    color: white;
-    border-radius: 999px;
-    padding: 8px 10px;
-    font-size: 12px;
-    font-weight: 800;
-    box-shadow: 0 6px 16px rgba(0,0,0,.25);
-  }
-
-  .leaflet-popup-content {
-    width: 260px !important;
-    max-width: 260px !important;
-  }
-
-  .popup-card,
-  .p-card {
-    max-height: 58vh !important;
-    overflow-y: auto !important;
-  }
-
-  .p-title {
-    font-size: 1.05rem !important;
-    line-height: 1.12 !important;
-  }
-
-  .wsm-card {
-    padding: .65rem !important;
-  }
-
-  .wsm-score,
-  .score-number {
-    font-size: 1.45rem !important;
-  }
-
-  .popup-actions,
-  .p-actions {
-    grid-template-columns: 1fr 1fr !important;
-    gap: .45rem !important;
-  }
-
-  .popup-actions button,
-  .popup-actions a,
-  .p-actions button,
-  .p-actions a {
-    height: 38px !important;
-    font-size: .75rem !important;
-  }
-
-  .app-header-center {
-    display: none !important;
-  }
-
-  .app-header {
-    height: 56px !important;
-  }
-}
-/* ================= MOBILE CLEAN RESPONSIVE MAP ================= */
+/* ============================================================
+   FINAL MOBILE UX FIX — Peta utama, popup, buffer, bottom sheet
+   ============================================================ */
 @media (max-width: 768px) {
   :root {
-    --sheet-height: 28vh;
+    --header: 64px;
+    --mobile-sheet-px: 58px;
   }
 
   html,
   body {
-    overflow: hidden !important;
+    width: 100% !important;
     height: 100% !important;
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
   }
 
-  .mobile-sheet-controls {
-    display: none !important;
-  }
-
+  /* Header dibuat lebih ringkas */
   .app-header {
     height: 64px !important;
     min-height: 64px !important;
-    padding: 0.55rem 0.75rem !important;
-    z-index: 10000 !important;
+    padding: 0.45rem 0.75rem !important;
+    z-index: 12000 !important;
   }
 
-  .app-header-center {
+  .app-header-center,
+  .coord-display {
     display: none !important;
   }
 
+  .app-header-brand {
+    min-width: 0 !important;
+  }
+
   .app-brand-name {
-    font-size: 0.72rem !important;
+    font-size: 0.68rem !important;
     letter-spacing: 0.14em !important;
   }
 
   .app-brand-sub {
-    font-size: 0.62rem !important;
+    font-size: 0.58rem !important;
+    letter-spacing: 0.12em !important;
+    max-width: 165px !important;
+    white-space: normal !important;
+    line-height: 1.35 !important;
   }
 
-  .map-wrap,
-  #map {
+  .hbtn-home {
+    font-size: 0.8rem !important;
+  }
+
+  /* Map full width, tidak didorong sidebar */
+  .map-wrap {
+    position: fixed !important;
     left: 0 !important;
     top: 64px !important;
-    width: 100% !important;
-    height: calc(100vh - 64px) !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: calc(100dvh - 64px) !important;
+    z-index: 1 !important;
   }
 
+  #map {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* Search bar lebih ramping */
+  .map-searchbar {
+    left: 12px !important;
+    right: 12px !important;
+    top: 12px !important;
+    width: auto !important;
+    z-index: 9000 !important;
+  }
+
+  .search-input-wrap {
+    min-height: 46px !important;
+    border-radius: 14px !important;
+  }
+
+  .search-input {
+    font-size: 0.86rem !important;
+  }
+
+  /* Sidebar menjadi bottom sheet yang benar-benar bisa ditarik */
   .app-sidebar {
     position: fixed !important;
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
     top: auto !important;
-    width: 100% !important;
-    height: var(--sheet-height) !important;
-    max-height: 82vh !important;
-    min-height: 12vh !important;
-    z-index: 9999 !important;
+    width: 100vw !important;
+    height: var(--mobile-sheet-px) !important;
+    min-height: 58px !important;
+    max-height: 78dvh !important;
+    z-index: 11000 !important;
     border-radius: 24px 24px 0 0 !important;
+    border-right: none !important;
+    border-top: 1px solid rgba(255,255,255,.12) !important;
+    box-shadow: 0 -18px 40px rgba(0,0,0,.35) !important;
     overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    transition: height 0.22s ease !important;
+    display: block !important;
     padding-top: 0 !important;
-    transition: height 0.18s ease !important;
-    box-shadow: 0 -16px 38px rgba(0, 0, 0, 0.28) !important;
   }
 
-  .sheet-handle {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    height: 34px;
-    background: var(--sb);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: grab;
+  .app-sidebar.is-dragging {
+    transition: none !important;
   }
 
-  .sheet-handle::before {
-    content: "";
-    width: 54px;
-    height: 5px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.38);
+  .mobile-sheet-handle {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 50 !important;
+    height: 42px !important;
+    background: var(--sb) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    touch-action: none !important;
+    cursor: grab !important;
   }
 
-  .sb-section {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+  .mobile-sheet-handle span {
+    width: 58px !important;
+    height: 6px !important;
+    display: block !important;
+    border-radius: 999px !important;
+    background: rgba(255,255,255,.38) !important;
   }
 
-  .search-box {
-    margin: 0.75rem !important;
-    width: calc(100% - 1.5rem) !important;
+  .app-sidebar .sb-section {
+    padding-left: 0.85rem !important;
+    padding-right: 0.85rem !important;
   }
 
+  .app-sidebar .sb-section:first-of-type {
+    padding-top: 0.15rem !important;
+  }
+
+  .sb-scroll {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .hli {
+    min-height: 48px !important;
+  }
+
+  /* Sembunyikan tombol manual lama bila masih ada */
+  .mobile-sheet-controls {
+    display: none !important;
+  }
+
+  /* Popup: kecil saat mobile supaya tidak nutup peta */
   .leaflet-popup {
-    margin-bottom: calc(var(--sheet-height) + 8px) !important;
+    margin-bottom: calc(var(--mobile-sheet-px) + 12px) !important;
   }
 
   .leaflet-popup-content-wrapper {
     border-radius: 16px !important;
+    overflow: hidden !important;
   }
 
   .leaflet-popup-content {
-    width: 255px !important;
-    max-width: 255px !important;
+    width: 248px !important;
+    max-width: 248px !important;
+    min-width: 0 !important;
     margin: 0 !important;
   }
 
-  .p-card,
-  .popup-card,
-  .hotel-popup {
-    max-height: 48vh !important;
+  .p-body {
+    padding: 0.72rem !important;
+    max-height: 46dvh !important;
     overflow-y: auto !important;
-    border-radius: 16px !important;
+    -webkit-overflow-scrolling: touch !important;
   }
 
-  .p-card {
-    padding: 0.8rem !important;
-  }
-
-  .p-title,
-  .popup-title,
-  .hotel-title,
-  .popup-card h2,
-  .popup-card h3 {
-    font-size: 1rem !important;
-    line-height: 1.1 !important;
+  .p-title {
+    font-size: 1.05rem !important;
+    line-height: 1.08 !important;
     max-width: 210px !important;
     white-space: normal !important;
     overflow-wrap: break-word !important;
+    word-break: normal !important;
   }
 
   .p-sub,
-  .popup-sub {
-    font-size: 0.72rem !important;
-  }
-
-  .p-info,
-  .popup-info {
+  .p-row {
     font-size: 0.72rem !important;
     line-height: 1.35 !important;
   }
 
-  .wsm-card,
-  .score-card,
-  .analysis-card {
-    padding: 0.55rem !important;
-    margin-top: 0.5rem !important;
+  .p-row {
+    margin-top: 0.18rem !important;
   }
 
-  .wsm-card .mono,
-  .wsm-card small {
-    font-size: 0.62rem !important;
-  }
-
-  .wsm-score,
-  .score-number,
-  .popup-score {
-    font-size: 1.35rem !important;
-  }
-
-  .wsm-row,
-  .score-row {
-    font-size: 0.62rem !important;
-    gap: 0.3rem !important;
-  }
-
-  .p-actions,
-  .popup-actions,
-  .hotel-actions,
-  .popup-buttons {
+  .p-actions {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-    gap: 0.45rem !important;
-    margin-top: 0.55rem !important;
+    gap: 0.42rem !important;
   }
 
-  .p-actions button,
-  .p-actions a,
-  .popup-actions button,
-  .popup-actions a,
-  .hotel-actions button,
-  .hotel-actions a {
-    height: 36px !important;
-    font-size: 0.72rem !important;
-    border-radius: 9px !important;
+  .p-btn {
+    min-height: 34px !important;
+    height: 34px !important;
+    font-size: 0.7rem !important;
+    border-radius: 8px !important;
+    padding: 0.2rem 0.35rem !important;
   }
 
-  .surround-panel,
-  .nearby-panel,
-  .buffer-panel,
-  #surround-panel {
+  /* WSM di popup dibuat compact */
+  .p-body div[style*="WSM SCORE"],
+  .p-body div[style*="Weighted Sum"] {
+    font-size: 0.56rem !important;
+  }
+
+  .p-body div[style*="font-size:1.55rem"] {
+    font-size: 1.3rem !important;
+  }
+
+  /* Saat zoom out, tampilkan popup super-ringkas */
+  body.mobile-zoom-out .p-body {
+    max-height: 36dvh !important;
+  }
+
+  body.mobile-zoom-out .p-body > div:nth-of-type(4) {
+    max-height: 92px !important;
+    overflow: hidden !important;
+    position: relative !important;
+  }
+
+  body.mobile-zoom-out .p-body > div:nth-of-type(4)::after {
+    content: "Scroll untuk detail WSM";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.25rem;
+    font-size: 0.62rem;
+    text-align: center;
+    color: #64748b;
+    background: linear-gradient(transparent, #f8fafc 35%, #f8fafc);
+  }
+
+  /* Panel buffer/kawasan sekitar: jangan ketutupan bottom sheet */
+  .surr-panel {
     position: fixed !important;
     left: 12px !important;
     right: 12px !important;
-    bottom: calc(var(--sheet-height) + 12px) !important;
+    top: 128px !important;
+    bottom: auto !important;
     width: auto !important;
-    max-height: 28vh !important;
-    overflow-y: auto !important;
-    z-index: 10001 !important;
-    border-radius: 14px !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,.25) !important;
+    max-width: none !important;
+    z-index: 11500 !important;
+    transform: none !important;
+    pointer-events: none !important;
   }
 
+  .surr-panel.open {
+    pointer-events: auto !important;
+  }
+
+  .surr-card {
+    max-height: 30dvh !important;
+    overflow-y: auto !important;
+    border-radius: 14px !important;
+    box-shadow: 0 16px 34px rgba(0,0,0,.28) !important;
+  }
+
+  .surr-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 2 !important;
+    font-size: 0.72rem !important;
+    padding: 0.65rem 0.8rem !important;
+  }
+
+  .surr-item {
+    padding: 0.55rem 0.75rem !important;
+  }
+
+  .surr-name,
+  .surr-dist {
+    font-size: 0.78rem !important;
+  }
+
+  /* Direction panel juga dibuat melayang di atas sheet */
+  .dir-panel {
+    position: fixed !important;
+    left: 12px !important;
+    right: 12px !important;
+    top: 128px !important;
+    bottom: auto !important;
+    width: auto !important;
+    max-height: 42dvh !important;
+    overflow-y: auto !important;
+    z-index: 11600 !important;
+    border-radius: 16px !important;
+    box-shadow: 0 16px 34px rgba(0,0,0,.28) !important;
+  }
+
+  .dir-panel-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 2 !important;
+  }
+
+  /* Tools kanan naik supaya tidak ketutup sheet */
+  .map-tools-right,
   .leaflet-control-zoom,
   .leaflet-control-layers {
-    margin-bottom: calc(var(--sheet-height) + 16px) !important;
+    margin-bottom: calc(var(--mobile-sheet-px) + 12px) !important;
+  }
+
+  .map-status {
+    display: none !important;
+  }
+
+  .leaflet-bottom.leaflet-right {
+    bottom: calc(var(--mobile-sheet-px) + 10px) !important;
+  }
+
+  .leaflet-control-attribution {
+    display: none !important;
   }
 }
+
