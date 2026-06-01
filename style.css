@@ -3296,3 +3296,66 @@ body {
     grid-template-columns: 1fr 1fr !important;
   }
 }
+/* =========================
+   FIX LANDING MOBILE FINAL
+   ========================= */
+@media (max-width:768px){
+
+  /* inventarisasi data */
+  .coverage-grid{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:16px !important;
+  }
+
+  /* dark card turun ke bawah */
+  .dark-cards{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:16px !important;
+  }
+
+  /* modul analisis spasial */
+  .modul-grid{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:16px !important;
+  }
+
+  .modul-card{
+    width:100% !important;
+  }
+
+  /* statistik bawah */
+  .stats-strip{
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:12px !important;
+    padding:24px 16px !important;
+  }
+
+  .stat-cell{
+    min-width:0 !important;
+  }
+
+  .stat-num{
+    font-size:1.3rem !important;
+  }
+
+  .stat-lbl{
+    font-size:.58rem !important;
+    line-height:1.4 !important;
+  }
+
+  /* section landing */
+  .lp-section,
+  .lp-section-dark{
+    padding:32px 16px !important;
+  }
+
+  .section-title{
+    font-size:1.8rem !important;
+    line-height:1.2 !important;
+  }
+
+}
