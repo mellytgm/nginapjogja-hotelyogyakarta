@@ -3378,3 +3378,374 @@ body {
     background: #fff !important;
   }
 }
+
+/* ============================================================
+   ✅ FINAL FIX BY CHATGPT — LANDING PAGE MOBILE WEBGIS NGINAP JOGJA
+   Pakai ini sebagai style.css final. Bagian ini sengaja PALING BAWAH
+   supaya menimpa CSS lama yang bikin Modul Analisis Spasial melebar.
+   ============================================================ */
+
+/* Desktop minor cleanup */
+.coverage-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.dark-cards {
+  grid-template-columns: 1fr;
+}
+
+.lp-section,
+.lp-section-dark,
+.stats-strip {
+  width: 100%;
+}
+
+/* Pastikan landing bisa scroll normal */
+#s-landing.screen.active {
+  display: block !important;
+}
+
+/* ================= MOBILE LANDING FINAL ================= */
+@media screen and (max-width: 768px) {
+  html,
+  body {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  body {
+    position: relative !important;
+  }
+
+  .screen {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  #s-landing,
+  #s-landing.screen,
+  #s-landing.screen.active {
+    position: fixed !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100dvh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    background: var(--bg) !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* NAVBAR LANDING */
+  #s-landing .lp-nav {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 9999 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 58px !important;
+    padding: 0.6rem 0.75rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 0.55rem !important;
+    overflow: hidden !important;
+    background: rgba(28, 43, 74, 0.94) !important;
+    backdrop-filter: blur(14px) !important;
+  }
+
+  #s-landing .logo-wrap {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    gap: 0.45rem !important;
+  }
+
+  #s-landing .logo-icon {
+    width: 34px !important;
+    height: 34px !important;
+    flex: 0 0 34px !important;
+  }
+
+  #s-landing .logo-text {
+    font-size: 0.6rem !important;
+    line-height: 1.25 !important;
+    letter-spacing: 0.12em !important;
+    white-space: normal !important;
+    overflow: visible !important;
+  }
+
+  #s-landing .nav-links {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    flex: 0 0 auto !important;
+    max-width: 48vw !important;
+    gap: 0.7rem !important;
+    overflow: hidden !important;
+  }
+
+  #s-landing .nav-links a {
+    font-size: 0.66rem !important;
+    line-height: 1.15 !important;
+    white-space: normal !important;
+    text-align: center !important;
+  }
+
+  /* HERO */
+  #s-landing .lp-hero {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    display: block !important;
+    overflow: hidden !important;
+  }
+
+  #s-landing .hero-bg,
+  #s-landing .hero-map-side {
+    position: absolute !important;
+  }
+
+  #s-landing .hero-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: calc(100dvh - 58px) !important;
+    padding: 3.4rem 1.1rem 2.8rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+  }
+
+  #s-landing .hero-title {
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: clamp(2.05rem, 11vw, 3rem) !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.03em !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    margin-bottom: 1rem !important;
+  }
+
+  #s-landing .hero-desc {
+    max-width: 100% !important;
+    font-size: 0.84rem !important;
+    line-height: 1.65 !important;
+    margin-bottom: 1.6rem !important;
+  }
+
+  #s-landing .btn-primary {
+    width: fit-content !important;
+    max-width: 100% !important;
+    white-space: normal !important;
+  }
+
+  /* SECTION UMUM */
+  #s-landing .lp-section,
+  #s-landing .lp-section-dark,
+  #s-landing .stats-strip {
+    position: relative !important;
+    display: block !important;
+    clear: both !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  #s-landing .lp-section {
+    padding: 2.5rem 1rem !important;
+    background: var(--bg) !important;
+  }
+
+  #s-landing .lp-section-dark {
+    padding: 2.5rem 1rem !important;
+    background: var(--sb) !important;
+    border-top: 1px solid var(--sb-border) !important;
+  }
+
+  #s-landing .section-eyebrow {
+    font-size: 0.64rem !important;
+    line-height: 1.4 !important;
+    overflow-wrap: break-word !important;
+  }
+
+  #s-landing .section-title {
+    font-size: clamp(1.55rem, 8vw, 2rem) !important;
+    line-height: 1.12 !important;
+    margin-bottom: 0.65rem !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+  }
+
+  #s-landing .section-desc {
+    font-size: 0.84rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 1.2rem !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* CAKUPAN & DATA */
+  #s-landing .coverage-grid,
+  #s-landing .dark-cards {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 1rem !important;
+    margin-top: 1rem !important;
+    overflow: visible !important;
+  }
+
+  #s-landing .cov-card,
+  #s-landing .dark-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  #s-landing .cov-card {
+    overflow-x: auto !important;
+  }
+
+  #s-landing .prox-table {
+    min-width: 0 !important;
+    width: 100% !important;
+    font-size: 0.68rem !important;
+  }
+
+  #s-landing .prox-table th,
+  #s-landing .prox-table td {
+    padding: 0.42rem 0.45rem !important;
+    word-break: normal !important;
+  }
+
+  /* MODUL ANALISIS SPASIAL — PAKSA TURUN KE BAWAH, BUKAN KE SAMPING */
+  #s-landing .modul-grid,
+  body #s-landing .modul-grid,
+  .screen#s-landing .lp-section-dark .modul-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    grid-template-columns: none !important;
+    grid-auto-flow: row !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    gap: 1rem !important;
+    margin: 1.15rem 0 0 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    transform: none !important;
+  }
+
+  #s-landing .modul-grid > .modul-card,
+  body #s-landing .modul-card,
+  .screen#s-landing .lp-section-dark .modul-card {
+    display: block !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 1.05rem !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+    grid-column: 1 / -1 !important;
+    background: var(--sb2) !important;
+  }
+
+  #s-landing .modul-card .modul-num {
+    font-size: 0.68rem !important;
+    line-height: 1.45 !important;
+    letter-spacing: 0.12em !important;
+    white-space: normal !important;
+  }
+
+  #s-landing .modul-card h4 {
+    font-size: 1rem !important;
+    line-height: 1.35 !important;
+    margin-bottom: 0.45rem !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+  }
+
+  #s-landing .modul-card p {
+    font-size: 0.82rem !important;
+    line-height: 1.6 !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    max-width: 100% !important;
+  }
+
+  /* STATS BAWAH */
+  #s-landing .stats-strip {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.85rem !important;
+    padding: 1.35rem 1rem max(4.5rem, env(safe-area-inset-bottom)) !important;
+    background: #fff !important;
+    overflow: hidden !important;
+  }
+
+  #s-landing .stat-cell {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    text-align: center !important;
+    overflow: hidden !important;
+  }
+
+  #s-landing .stat-num {
+    display: block !important;
+    font-size: clamp(1.2rem, 7vw, 1.7rem) !important;
+    line-height: 1.05 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+  }
+
+  #s-landing .stat-lbl {
+    display: block !important;
+    font-size: 0.58rem !important;
+    line-height: 1.4 !important;
+    letter-spacing: 0.07em !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+  }
+}
+
+@media screen and (max-width: 390px) {
+  #s-landing .hero-title {
+    font-size: clamp(1.95rem, 10vw, 2.55rem) !important;
+  }
+
+  #s-landing .logo-text {
+    font-size: 0.56rem !important;
+  }
+
+  #s-landing .nav-links {
+    gap: 0.5rem !important;
+    max-width: 50vw !important;
+  }
+
+  #s-landing .nav-links a {
+    font-size: 0.61rem !important;
+  }
+}
