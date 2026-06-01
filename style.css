@@ -3568,3 +3568,41 @@ body {
     background: #fff !important;
   }
 }
+/* FIX FINAL: LANDING JANGAN NONGOL DI HALAMAN PETA MOBILE */
+@media (max-width: 768px) {
+  .screen {
+    display: none !important;
+  }
+
+  .screen.active {
+    display: flex !important;
+  }
+
+  #s-landing:not(.active) {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  #s-map.active {
+    display: block !important;
+    background: #eef2f7 !important;
+    z-index: 999 !important;
+  }
+
+  #s-map.active .app-header,
+  #s-map.active .map-wrap,
+  #s-map.active .map-searchbar,
+  #s-map.active .app-sidebar {
+    visibility: visible !important;
+  }
+
+  .map-searchbar {
+    background: transparent !important;
+  }
+
+  .search-input-wrap {
+    background: #ffffff !important;
+    background-image: none !important;
+  }
+}
