@@ -3606,3 +3606,28 @@ body {
     background-image: none !important;
   }
 }
+/* FIX PASTI: TUTUP FOTO HERO DI AREA SEARCH MAP MOBILE */
+@media (max-width: 768px) {
+  .map-wrap::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 95px;
+    background: #eef2f7;
+    z-index: 8000;
+    pointer-events: none;
+  }
+
+  .map-searchbar {
+    z-index: 9000 !important;
+  }
+
+  .search-input-wrap {
+    position: relative;
+    z-index: 9001 !important;
+    background: #ffffff !important;
+    box-shadow: 0 6px 20px rgba(28, 43, 74, 0.18) !important;
+  }
+}
