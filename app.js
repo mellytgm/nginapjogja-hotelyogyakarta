@@ -90,7 +90,7 @@ function initMap() {
   HOTELS.forEach((h) => addMarker(h));
   clusterGroup.addTo(map);
   buildSidebarList();
-  loadYogyaBoundary();
+  // loadYogyaBoundary();
 
   map.on("mousemove", (e) => {
     const el = document.getElementById("cursor-coord");
