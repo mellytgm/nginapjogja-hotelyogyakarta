@@ -2902,251 +2902,258 @@ body {
     max-width: 100vw !important;
   }
 }
-
 /* ============================================================
-   FIX PALING AKHIR — MOBILE LANDING, NAVBAR, SEARCH BAR
-   Jangan taruh CSS lain di bawah blok ini.
+   EMERGENCY MOBILE OVERRIDE — LANDING, NAV, SEARCH BAR
+   Fix horizontal cut on iPhone/GitHub Pages
    ============================================================ */
 @media (max-width: 768px) {
-  /* Pakai dynamic viewport supaya tidak kepotong browser bar HP */
+  *, *::before, *::after { box-sizing: border-box !important; }
   html, body {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Semua screen mobile tidak boleh melebar keluar layar */
+  .screen,
+  #s-landing,
+  #s-map,
+  .lp-section,
+  .lp-section-dark,
+  .stats-strip {
     width: 100vw !important;
     max-width: 100vw !important;
     overflow-x: hidden !important;
   }
 
-  /* LANDING NAVBAR */
-  #s-landing .lp-nav {
-    position: sticky !important;
-    top: 0 !important;
+  /* ===== Landing Navbar ===== */
+  .lp-nav {
     width: 100vw !important;
     max-width: 100vw !important;
     height: auto !important;
-    min-height: 64px !important;
-    padding: 0.65rem 0.85rem !important;
+    min-height: 58px !important;
+    padding: 0.6rem 0.8rem !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    gap: 0.65rem !important;
+    gap: 0.55rem !important;
     overflow: hidden !important;
   }
 
-  #s-landing .logo-wrap {
+  .lp-nav .logo-wrap {
     flex: 1 1 auto !important;
     min-width: 0 !important;
-    max-width: 42vw !important;
     gap: 0.45rem !important;
   }
 
-  #s-landing .logo-icon,
-  .app-header .logo-icon {
+  .lp-nav .logo-icon {
     width: 34px !important;
     height: 34px !important;
-    min-width: 34px !important;
-    border-radius: 9px !important;
+    flex: 0 0 34px !important;
   }
 
-  #s-landing .logo-text {
+  .lp-nav .logo-text {
     font-size: 0.62rem !important;
-    line-height: 1.28 !important;
+    line-height: 1.35 !important;
     letter-spacing: 0.12em !important;
     white-space: normal !important;
-    overflow-wrap: anywhere !important;
+    word-break: keep-all !important;
+    overflow: visible !important;
   }
 
-  #s-landing .nav-links {
+  .lp-nav .nav-links {
     flex: 0 0 auto !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: flex-end !important;
-    gap: 0.7rem !important;
-    max-width: 52vw !important;
+    gap: 0.65rem !important;
+    max-width: 45vw !important;
     overflow: hidden !important;
   }
 
-  #s-landing .nav-links a {
-    font-size: 0.76rem !important;
-    line-height: 1.18 !important;
+  .lp-nav .nav-links a {
+    font-size: 0.68rem !important;
+    line-height: 1.15 !important;
     white-space: normal !important;
-    max-width: 72px !important;
     text-align: center !important;
   }
 
-  /* LANDING HERO: jangan overflow ke kanan */
-  #s-landing .lp-hero {
+  /* ===== Landing Hero ===== */
+  .lp-hero {
     width: 100vw !important;
     max-width: 100vw !important;
-    min-height: calc(100dvh - 64px) !important;
+    min-height: calc(100dvh - 58px) !important;
     overflow: hidden !important;
   }
 
-  #s-landing .hero-content {
+  .hero-content {
     width: 100% !important;
-    max-width: 100vw !important;
-    padding: 3.2rem 1.15rem 2.6rem !important;
+    max-width: 100% !important;
+    padding: 3.3rem 1.1rem 2.3rem !important;
     overflow: hidden !important;
   }
 
-  #s-landing .hero-badge {
-    font-size: 0.62rem !important;
-    margin-bottom: 1.2rem !important;
-  }
+  .hero-badge { margin-bottom: 1.15rem !important; }
 
-  #s-landing .hero-title {
-    font-size: clamp(2rem, 10.5vw, 2.9rem) !important;
-    line-height: 1.08 !important;
-    max-width: calc(100vw - 2.3rem) !important;
+  .hero-title {
     width: 100% !important;
-    white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: anywhere !important;
+    max-width: 100% !important;
+    font-size: clamp(2.15rem, 11.4vw, 2.95rem) !important;
+    line-height: 1.06 !important;
     letter-spacing: -0.03em !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
     margin-bottom: 1rem !important;
   }
 
-  #s-landing .hero-desc {
-    width: 100% !important;
-    max-width: calc(100vw - 2.3rem) !important;
-    font-size: 0.82rem !important;
+  .hero-desc {
+    max-width: 100% !important;
+    font-size: 0.84rem !important;
     line-height: 1.65 !important;
+    margin-bottom: 1.6rem !important;
   }
 
-  #s-landing .btn-primary {
-    max-width: calc(100vw - 2.3rem) !important;
+  .btn-primary {
+    max-width: 100% !important;
     white-space: normal !important;
   }
 
-  /* MAP HEADER: teks Beranda tidak kepotong */
-  #s-map .app-header {
+  /* Modul jangan 3 kolom di HP */
+  .modul-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.9rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 1rem 0 0 !important;
+  }
+
+  .modul-card {
+    width: 100% !important;
+    min-height: auto !important;
+    padding: 1rem !important;
+  }
+
+  .modul-card p {
+    font-size: 0.78rem !important;
+    line-height: 1.65 !important;
+    word-break: normal !important;
+  }
+
+  .lp-section,
+  .lp-section-dark {
+    padding: 2.4rem 1.1rem !important;
+  }
+
+  .stats-strip {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 1rem !important;
+    padding: 1.2rem 1rem 6rem !important;
+  }
+
+  .stat-num { font-size: 1.55rem !important; }
+  .stat-lbl { font-size: 0.58rem !important; line-height: 1.45 !important; }
+
+  /* ===== Map Header ===== */
+  .app-header {
     width: 100vw !important;
     max-width: 100vw !important;
     height: 64px !important;
     min-height: 64px !important;
-    padding: 0.45rem 0.7rem !important;
-    display: flex !important;
-    align-items: center !important;
+    padding: 0.45rem 0.65rem !important;
     overflow: hidden !important;
+    justify-content: space-between !important;
   }
 
-  #s-map .app-header-brand {
+  .app-header-brand {
     width: auto !important;
-    max-width: calc(100vw - 98px) !important;
+    max-width: calc(100vw - 105px) !important;
     flex: 1 1 auto !important;
     min-width: 0 !important;
     padding: 0 !important;
-    border-right: none !important;
-    gap: 0.55rem !important;
+    border-right: 1px solid rgba(255,255,255,.10) !important;
   }
 
-  #s-map .app-brand-text {
-    min-width: 0 !important;
-    overflow: hidden !important;
+  .app-brand-text { min-width: 0 !important; }
+  .app-brand-name {
+    font-size: 0.68rem !important;
+    line-height: 1.25 !important;
+    letter-spacing: 0.13em !important;
+    white-space: normal !important;
   }
-
-  #s-map .app-brand-name {
-    font-size: 0.66rem !important;
+  .app-brand-sub {
+    font-size: 0.56rem !important;
     line-height: 1.25 !important;
     letter-spacing: 0.12em !important;
     white-space: normal !important;
   }
-
-  #s-map .app-brand-sub {
-    font-size: 0.54rem !important;
-    line-height: 1.25 !important;
-    letter-spacing: 0.11em !important;
-    white-space: normal !important;
-    max-width: 190px !important;
-  }
-
-  #s-map .app-header-right {
+  .app-header-right {
     flex: 0 0 auto !important;
-    width: auto !important;
-    padding: 0 0 0 0.55rem !important;
-    margin-left: 0.35rem !important;
-    border-left: 1px solid rgba(255,255,255,.12) !important;
+    padding: 0 0 0 0.65rem !important;
+    border-left: none !important;
   }
-
-  #s-map .hbtn-home {
-    display: inline-flex !important;
-    min-width: 58px !important;
-    max-width: 74px !important;
-    padding: 0.35rem 0.35rem !important;
+  .hbtn-home {
     font-size: 0.74rem !important;
-    white-space: normal !important;
-    text-align: center !important;
-    line-height: 1.15 !important;
-    color: rgba(255,255,255,.75) !important;
+    white-space: nowrap !important;
   }
 
-  /* SEARCH BAR: class asli kamu adalah .map-searchbar */
-  #s-map .map-searchbar {
+  /* ===== Map Search Bar: class asli kamu .map-searchbar ===== */
+  .map-searchbar {
     position: absolute !important;
-    top: 10px !important;
     left: 10px !important;
     right: 10px !important;
+    top: 12px !important;
     width: auto !important;
     max-width: none !important;
     transform: none !important;
-    margin: 0 !important;
     z-index: 9000 !important;
-    box-sizing: border-box !important;
   }
 
-  #s-map .search-input-wrap {
+  .search-input-wrap {
     width: 100% !important;
-    max-width: 100% !important;
     min-height: 46px !important;
-    padding: 0.48rem 0.65rem !important;
-    border-radius: 14px !important;
-    box-sizing: border-box !important;
-    gap: 0.45rem !important;
+    background: rgba(255,255,255,0.96) !important;
+    border: 1.5px solid rgba(11,159,151,.35) !important;
+    border-radius: 15px !important;
+    padding: 0.5rem 0.65rem !important;
+    box-shadow: 0 7px 22px rgba(28,43,74,.18) !important;
+    backdrop-filter: blur(8px) !important;
   }
 
-  #s-map .search-icon {
+  .search-icon {
     flex: 0 0 auto !important;
     font-size: 1rem !important;
   }
 
-  #s-map .search-input {
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
+  .search-input {
     width: 100% !important;
-    max-width: 100% !important;
-    font-size: 0.82rem !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
+    min-width: 0 !important;
+    font-size: 0.84rem !important;
+    line-height: 1.2 !important;
+    color: var(--text) !important;
   }
 
-  #s-map .search-clear {
+  .search-input::placeholder {
+    color: #94a3b8 !important;
+    opacity: 1 !important;
+  }
+
+  .search-clear {
     flex: 0 0 auto !important;
   }
 
-  #s-map .map-wrap {
-    left: 0 !important;
-    right: 0 !important;
-    top: 64px !important;
-    width: 100vw !important;
-    max-width: 100vw !important;
-    overflow: hidden !important;
+  .search-results-drop {
+    width: 100% !important;
+    max-width: 100% !important;
   }
 }
 
 @media (max-width: 390px) {
-  #s-landing .hero-title {
-    font-size: clamp(1.85rem, 10vw, 2.55rem) !important;
+  .hero-title {
+    font-size: clamp(2rem, 10.6vw, 2.55rem) !important;
   }
-
-  #s-landing .nav-links a {
-    font-size: 0.7rem !important;
-    max-width: 64px !important;
-  }
-
-  #s-map .app-brand-sub {
-    max-width: 155px !important;
-  }
-
-  #s-map .hbtn-home {
-    min-width: 54px !important;
-    font-size: 0.7rem !important;
-  }
+  .lp-nav .logo-text,
+  .app-brand-name { font-size: 0.58rem !important; }
+  .lp-nav .nav-links a { font-size: 0.63rem !important; }
 }
