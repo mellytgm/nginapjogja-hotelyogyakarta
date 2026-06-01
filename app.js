@@ -101,6 +101,7 @@ function initMap() {
   map.on("zoomend", () => {
     const el = document.getElementById("zoom-level");
     if (el) el.textContent = map.getZoom();
+    updateMobileMapState();
   });
 
   map.on("click", onMapClick);
@@ -523,10 +524,12 @@ function addMarker(h) {
   const m = L.marker([h.lat, h.lng], {
     icon: makeIcon(h.category, h.stars),
   }).bindPopup(popupHtml, {
-    maxWidth: 330,
-    minWidth: 310,
+    maxWidth: window.innerWidth <= 768 ? 270 : 330,
+    minWidth: window.innerWidth <= 768 ? 250 : 310,
     autoPan: true,
     keepInView: true,
+    autoPanPaddingTopLeft: [14, 86],
+    autoPanPaddingBottomRight: [14, window.innerWidth <= 768 ? 135 : 24],
   });
 
   m.on("click", () => {
@@ -2178,50 +2181,133 @@ function buildLpFooter() {
   });
   ctx.globalCompositeOperation = "source-over";
 }
-/* ================= MOBILE DRAGGABLE BOTTOM SHEET ================= */
-function initMobileBottomSheet() {
-  if (window.innerWidth > 768) return;
 
+
+/* ================= FINAL MOBILE UX: DRAG SHEET + COMPACT POPUP ================= */
+function isMobileWebGIS() {
+  return window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+}
+
+function setMobileSheetHeight(px, animate = true) {
   const sidebar = document.querySelector(".app-sidebar");
-  if (!sidebar || sidebar.querySelector(".sheet-handle")) return;
+  if (!sidebar || !isMobileWebGIS()) return;
+
+  const vh = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+  const min = 56;
+  const max = Math.round(vh * 0.78);
+  const h = Math.max(min, Math.min(max, px));
+
+  sidebar.classList.toggle("is-dragging", !animate);
+  sidebar.style.height = h + "px";
+  document.documentElement.style.setProperty("--mobile-sheet-px", h + "px");
+
+  window.clearTimeout(sidebar._leafletResizeTimer);
+  sidebar._leafletResizeTimer = window.setTimeout(() => {
+    if (map) map.invalidateSize();
+    updateMobileMapState();
+  }, animate ? 220 : 20);
+}
+
+function snapMobileSheet(px) {
+  const vh = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+  const points = [58, Math.round(vh * 0.32), Math.round(vh * 0.58), Math.round(vh * 0.78)];
+  let best = points[0];
+  for (const p of points) {
+    if (Math.abs(px - p) < Math.abs(px - best)) best = p;
+  }
+  setMobileSheetHeight(best, true);
+}
+
+function initMobileBottomSheetFinal() {
+  const sidebar = document.querySelector(".app-sidebar");
+  if (!sidebar || sidebar.dataset.mobileSheetReady === "1") return;
+  sidebar.dataset.mobileSheetReady = "1";
 
   const handle = document.createElement("div");
-  handle.className = "sheet-handle";
+  handle.className = "mobile-sheet-handle";
+  handle.innerHTML = `<span></span>`;
   sidebar.prepend(handle);
 
   let startY = 0;
-  let startHeight = 0;
+  let startH = 0;
+  let moved = false;
 
-  const setHeight = (vh) => {
-    sidebar.style.height = `${vh}vh`;
-    document.body.style.setProperty("--sheet-height", `${vh}vh`);
-    setTimeout(() => {
-      if (map) map.invalidateSize();
-    }, 250);
+  const startDrag = (clientY) => {
+    if (!isMobileWebGIS()) return;
+    moved = false;
+    startY = clientY;
+    startH = sidebar.getBoundingClientRect().height || 58;
+    sidebar.classList.add("is-dragging");
   };
 
-  setHeight(28);
+  const moveDrag = (clientY, ev) => {
+    if (!isMobileWebGIS() || !startY) return;
+    const delta = startY - clientY;
+    if (Math.abs(delta) > 4) moved = true;
+    setMobileSheetHeight(startH + delta, false);
+    if (ev && ev.cancelable) ev.preventDefault();
+  };
 
-  handle.addEventListener("touchstart", (e) => {
-    startY = e.touches[0].clientY;
-    startHeight = sidebar.offsetHeight;
+  const endDrag = () => {
+    if (!isMobileWebGIS() || !startY) return;
+    const h = sidebar.getBoundingClientRect().height || 58;
+    sidebar.classList.remove("is-dragging");
+    if (!moved) {
+      const vh = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+      if (h < vh * 0.20) setMobileSheetHeight(Math.round(vh * 0.58), true);
+      else if (h < vh * 0.62) setMobileSheetHeight(Math.round(vh * 0.78), true);
+      else setMobileSheetHeight(58, true);
+    } else {
+      snapMobileSheet(h);
+    }
+    startY = 0;
+    startH = 0;
+  };
+
+  handle.addEventListener("touchstart", (e) => startDrag(e.touches[0].clientY), { passive: false });
+  handle.addEventListener("touchmove", (e) => moveDrag(e.touches[0].clientY, e), { passive: false });
+  handle.addEventListener("touchend", endDrag, { passive: true });
+
+  handle.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "mouse" || e.pointerType === "pen") {
+      startDrag(e.clientY);
+      handle.setPointerCapture?.(e.pointerId);
+    }
   });
-
-  handle.addEventListener("touchmove", (e) => {
-    const y = e.touches[0].clientY;
-    const diff = startY - y;
-    const newHeightPx = startHeight + diff;
-    const vh = Math.max(12, Math.min(82, (newHeightPx / window.innerHeight) * 100));
-    setHeight(vh);
+  handle.addEventListener("pointermove", (e) => {
+    if (startY) moveDrag(e.clientY, e);
   });
+  handle.addEventListener("pointerup", endDrag);
+  handle.addEventListener("pointercancel", endDrag);
 
-  handle.addEventListener("click", () => {
-    const current = sidebar.offsetHeight / window.innerHeight * 100;
-    if (current < 35) setHeight(62);
-    else if (current < 70) setHeight(82);
-    else setHeight(20);
+  /* Default: hanya handle kecil supaya peta tidak ketutup */
+  if (isMobileWebGIS()) setMobileSheetHeight(58, true);
+}
+
+function updateMobileMapState() {
+  if (!document.body) return;
+  const z = map ? map.getZoom() : 13;
+  const mobile = isMobileWebGIS();
+  document.body.classList.toggle("mobile-map", mobile);
+  document.body.classList.toggle("mobile-zoom-out", mobile && z <= 13);
+  document.body.classList.toggle("mobile-zoom-in", mobile && z >= 16);
+
+  const sidebar = document.querySelector(".app-sidebar");
+  if (mobile && sidebar && !sidebar.style.height) setMobileSheetHeight(58, true);
+}
+
+window.addEventListener("load", () => {
+  initMobileBottomSheetFinal();
+  updateMobileMapState();
+});
+window.addEventListener("resize", () => {
+  initMobileBottomSheetFinal();
+  updateMobileMapState();
+  if (isMobileWebGIS()) setMobileSheetHeight(58, true);
+});
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", () => {
+    updateMobileMapState();
   });
 }
 
-window.addEventListener("load", initMobileBottomSheet);
-window.addEventListener("resize", initMobileBottomSheet);
