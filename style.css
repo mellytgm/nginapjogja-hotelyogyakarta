@@ -2537,3 +2537,226 @@ body {
   }
 }
 
+
+
+/* ================= MOBILE UX v2 OVERRIDE — smooth sheet, compact popup, draggable buffer/rute ================= */
+@media (max-width: 768px) {
+  :root { --mobile-sheet-px: 50px; }
+
+  html, body {
+    height: 100% !important;
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+  }
+
+  .mobile-sheet-controls,
+  .sheet-handle,
+  .app-sidebar::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  .app-header {
+    height: 66px !important;
+    min-height: 66px !important;
+    padding: .55rem .75rem !important;
+    z-index: 12000 !important;
+  }
+  .app-header-center { display: none !important; }
+  .app-brand-name { font-size: .68rem !important; letter-spacing: .14em !important; }
+  .app-brand-sub { font-size: .56rem !important; letter-spacing: .16em !important; }
+  .hbtn-home { font-size: .72rem !important; padding: .45rem .65rem !important; }
+
+  .map-wrap, #map {
+    left: 0 !important;
+    top: 66px !important;
+    width: 100% !important;
+    height: calc(100dvh - 66px) !important;
+  }
+
+  .app-sidebar {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: var(--mobile-sheet-px) !important;
+    min-height: 50px !important;
+    max-height: 82dvh !important;
+    z-index: 11000 !important;
+    border-radius: 24px 24px 0 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-top: 0 !important;
+    transition: height .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s ease !important;
+    box-shadow: 0 -18px 40px rgba(15,23,42,.34) !important;
+    -webkit-overflow-scrolling: touch !important;
+    will-change: height !important;
+  }
+  .app-sidebar.sheet-dragging { transition: none !important; }
+
+  .mobile-sheet-handle {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 60 !important;
+    height: 50px !important;
+    min-height: 50px !important;
+    background: linear-gradient(180deg, #1c2b4a 0%, #1c2b4a 70%, rgba(28,43,74,.92) 100%) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    touch-action: none !important;
+    cursor: grab !important;
+  }
+  .mobile-sheet-handle span {
+    display: block !important;
+    width: 64px !important;
+    height: 6px !important;
+    border-radius: 999px !important;
+    background: rgba(255,255,255,.42) !important;
+    box-shadow: none !important;
+  }
+  .mobile-sheet-handle:active { cursor: grabbing !important; }
+
+  .app-sidebar .sb-section { padding-left: .95rem !important; padding-right: .95rem !important; }
+  .app-sidebar .sb-section:first-of-type { padding-top: .2rem !important; }
+  .sb-scroll { max-height: none !important; overflow: visible !important; }
+
+  /* Popup selalu di atas sheet dan lebih compact */
+  .leaflet-popup {
+    margin-bottom: calc(var(--mobile-sheet-px) + 16px) !important;
+    transition: transform .18s ease !important;
+  }
+  .leaflet-popup-content-wrapper {
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    box-shadow: 0 14px 35px rgba(15,23,42,.22) !important;
+  }
+  .leaflet-popup-content {
+    width: min(286px, calc(100vw - 34px)) !important;
+    max-width: min(286px, calc(100vw - 34px)) !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+  }
+  .p-body {
+    padding: .72rem !important;
+    max-height: min(52dvh, 420px) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: thin !important;
+  }
+  .p-title {
+    font-size: 1rem !important;
+    line-height: 1.12 !important;
+    max-width: 220px !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+  }
+  .p-sub, .p-row { font-size: .69rem !important; line-height: 1.28 !important; }
+  .p-row { margin-top: .16rem !important; }
+  .p-actions {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: .42rem !important;
+    margin-top: .45rem !important;
+  }
+  .p-btn {
+    min-height: 33px !important;
+    height: 33px !important;
+    font-size: .68rem !important;
+    border-radius: 9px !important;
+    padding: .16rem .35rem !important;
+  }
+  .p-body div[style*="margin:.65rem"],
+  .p-body div[style*="margin: .65rem"] {
+    padding: .5rem !important;
+    margin-top: .48rem !important;
+  }
+  .p-body div[style*="font-size:1.55rem"] { font-size: 1.25rem !important; }
+
+  /* Zoom out: popup jadi ringkas, WSM detail disembunyikan supaya peta tidak penuh */
+  body.mobile-zoom-out .leaflet-popup-content {
+    width: min(230px, calc(100vw - 42px)) !important;
+    max-width: min(230px, calc(100vw - 42px)) !important;
+  }
+  body.mobile-zoom-out .p-body {
+    max-height: 34dvh !important;
+    padding: .62rem !important;
+  }
+  body.mobile-zoom-out .p-title { font-size: .88rem !important; line-height: 1.08 !important; max-width: 178px !important; }
+  body.mobile-zoom-out .p-sub { font-size: .62rem !important; }
+  body.mobile-zoom-out .p-row { font-size: .62rem !important; }
+  body.mobile-zoom-out .p-body div[style*="margin:.65rem"],
+  body.mobile-zoom-out .p-body div[style*="margin: .65rem"] {
+    max-height: 86px !important;
+    overflow: hidden !important;
+  }
+  body.mobile-zoom-out .p-body div[style*="font-size:1.55rem"] { font-size: 1rem !important; }
+  body.mobile-zoom-out .p-actions { grid-template-columns: 1fr !important; gap: .32rem !important; }
+  body.mobile-zoom-out .p-btn { height: 30px !important; min-height: 30px !important; font-size: .62rem !important; }
+
+  /* Zoom in: boleh lebih informatif */
+  body.mobile-zoom-in .leaflet-popup-content {
+    width: min(306px, calc(100vw - 28px)) !important;
+    max-width: min(306px, calc(100vw - 28px)) !important;
+  }
+  body.mobile-zoom-in .p-body { max-height: 56dvh !important; }
+
+  /* Buffer dan rute: floating, berada di atas sheet, bisa digeser dari header */
+  .surr-panel,
+  .dir-panel {
+    position: fixed !important;
+    left: 12px !important;
+    right: 12px !important;
+    top: 78px !important;
+    bottom: auto !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: calc(100dvh - var(--mobile-sheet-px) - 96px) !important;
+    z-index: 12500 !important;
+    transform: none !important;
+    pointer-events: none !important;
+  }
+  .surr-panel.open,
+  .dir-panel.open { pointer-events: auto !important; }
+  .surr-card,
+  .dir-panel {
+    border-radius: 16px !important;
+    overflow-y: auto !important;
+    box-shadow: 0 18px 42px rgba(15,23,42,.28) !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .surr-card { max-height: inherit !important; }
+  .surr-header,
+  .dir-panel-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 4 !important;
+    cursor: grab !important;
+    touch-action: none !important;
+    user-select: none !important;
+  }
+  .surr-header::after,
+  .dir-panel-header::after {
+    content: "tarik";
+    float: right;
+    opacity: .55;
+    font-size: .62rem;
+    font-family: var(--mono);
+    letter-spacing: .08em;
+  }
+  .floating-dragging { transition: none !important; }
+  .surr-item { padding: .55rem .75rem !important; }
+  .surr-name, .surr-dist { font-size: .76rem !important; }
+
+  .map-tools-right,
+  .leaflet-control-zoom,
+  .leaflet-control-layers,
+  .leaflet-bottom.leaflet-right {
+    margin-bottom: calc(var(--mobile-sheet-px) + 12px) !important;
+  }
+  .leaflet-bottom.leaflet-right { bottom: calc(var(--mobile-sheet-px) + 8px) !important; }
+  .map-status,
+  .leaflet-control-attribution { display: none !important; }
+}
