@@ -2309,3 +2309,116 @@ body {
     grid-template-columns: 1fr 1fr !important;
   }
 }
+/* ================= MOBILE MAP FIX ================= */
+@media (max-width: 768px) {
+  .app-sidebar {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    top: auto !important;
+    width: 100% !important;
+    height: 42vh !important;
+    z-index: 9999 !important;
+    border-radius: 22px 22px 0 0 !important;
+    overflow-y: auto !important;
+    transform: translateY(0);
+    transition: height .28s ease, transform .28s ease;
+  }
+
+  .app-sidebar::before {
+    content: "";
+    display: block;
+    width: 48px;
+    height: 5px;
+    background: rgba(255,255,255,.35);
+    border-radius: 999px;
+    margin: 10px auto 8px;
+  }
+
+  body.sidebar-small .app-sidebar {
+    height: 16vh !important;
+  }
+
+  body.sidebar-full .app-sidebar {
+    height: 82vh !important;
+  }
+
+  body.sidebar-hide .app-sidebar {
+    transform: translateY(calc(100% - 54px));
+  }
+
+  #map,
+  .map-wrap {
+    left: 0 !important;
+    width: 100% !important;
+    height: calc(100vh - 54px) !important;
+  }
+
+  .mobile-sheet-controls {
+    position: fixed;
+    right: 12px;
+    bottom: 44vh;
+    z-index: 10000;
+    display: flex;
+    gap: 6px;
+  }
+
+  .mobile-sheet-controls button {
+    border: none;
+    background: #1c2b4a;
+    color: white;
+    border-radius: 999px;
+    padding: 8px 10px;
+    font-size: 12px;
+    font-weight: 800;
+    box-shadow: 0 6px 16px rgba(0,0,0,.25);
+  }
+
+  .leaflet-popup-content {
+    width: 260px !important;
+    max-width: 260px !important;
+  }
+
+  .popup-card,
+  .p-card {
+    max-height: 58vh !important;
+    overflow-y: auto !important;
+  }
+
+  .p-title {
+    font-size: 1.05rem !important;
+    line-height: 1.12 !important;
+  }
+
+  .wsm-card {
+    padding: .65rem !important;
+  }
+
+  .wsm-score,
+  .score-number {
+    font-size: 1.45rem !important;
+  }
+
+  .popup-actions,
+  .p-actions {
+    grid-template-columns: 1fr 1fr !important;
+    gap: .45rem !important;
+  }
+
+  .popup-actions button,
+  .popup-actions a,
+  .p-actions button,
+  .p-actions a {
+    height: 38px !important;
+    font-size: .75rem !important;
+  }
+
+  .app-header-center {
+    display: none !important;
+  }
+
+  .app-header {
+    height: 56px !important;
+  }
+}
