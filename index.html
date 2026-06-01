@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yogyakarta WebGIS — Persebaran Hotel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <!-- MarkerCluster: gabungkan marker tumpang tindih saat zoom out -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ═══════════════════════════════════════════════════════════
+       SCREEN 1 — LANDING PAGE 
+        ═══════════════════════════════════════════════════════════ -->
+    <div id="s-landing" class="screen">
+      <!-- Nav -->
+      <nav class="lp-nav">
+        <div class="logo-wrap">
+          <div class="logo-icon">⊕</div>
+          <div class="logo-text">YOGYAKARTA WEBGIS</div>
+        </div>
+        <div class="nav-links">
+          <a onclick="goToMap()">Peta Utama</a>
+
+          <a
+            class="btn-ghost"
+            onclick="
+              document
+                .getElementById('data-section')
+                .scrollIntoView({ behavior: 'smooth' })
+            "
+          >
+            Metodologi Data
+          </a>
+        </div>
+      </nav>
+
+      <!-- Hero -->
+      <section class="lp-hero">
+        <div class="hero-bg"></div>
+        <div class="hero-map-side"></div>
+        <div class="hero-content">
+          <div class="hero-badge">Nginapjogja</div>
+          <h1 class="hero-title">
+            WebGIS<br />
+            Persebaran &amp;<br />
+            Analisis <span>Hotel</span><br />
+            Yogyakarta
+          </h1>
+          <p class="hero-desc">
+            Platform instrumentasi spasial berbasis kerangka Geodesign untuk
+            evaluasi ketersediaan akomodasi dan pemetaan densitas pariwisata di
+            wilayah administrasi Kota Yogyakarta.
+          </p>
+          <div class="hero-btns">
+            <button class="btn-primary" onclick="goToMap()">
+              <span>▦</span> Mulai Cari Hotel
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Coverage + Data Section -->
+      <section class="lp-section" id="data-section">
+        <div class="section-eyebrow">CAKUPAN WILAYAH &amp; DATA</div>
+        <h2 class="section-title">Inventarisasi Data Geospasial</h2>
+        <p class="section-desc">
+          Inventarisasi data geospasial primer Kota Yogyakarta dan Kabupaten
+          DIY.
+        </p>
+
+        <div class="coverage-grid">
+          <!-- Map card -->
+
+          <!-- Table card -->
+          <div class="cov-card">
+            <div class="cov-card-header">
+              <div class="title">DISTRIBUSI PER KECAMATAN</div>
+              <div class="sub">Jumlah entitas hotel per unit administrasi</div>
+            </div>
+            <div style="padding: 0.5rem">
+              <table class="prox-table" style="width: 100%">
+                <thead>
+                  <tr>
+                    <th>KECAMATAN</th>
+                    <th>HOTEL</th>
+                    <th>STATUS</th>
+                  </tr>
+                </thead>
+                <tbody id="kec-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dark info cards -->
+        <div class="dark-cards" style="margin-top: 1.5rem">
+          <div class="dark-card">
+            <div class="dark-card-icon">🗂️</div>
+            <h4>Hierarki Layer</h4>
+            <ul>
+              <li>Titik Persebaran Hotel (Point)</li>
+              <li>Buffer Kawasan Wisata (Area)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Modul Analisis Spasial -->
+      <section class="lp-section-dark">
+        <div class="section-eyebrow" style="color: rgba(11, 207, 197, 0.8)">
+          FITUR PLATFORM
+        </div>
+        <h2 class="section-title" style="color: #fff">
+          Modul Analisis Spasial
+        </h2>
+        <p class="section-desc" style="color: rgba(255, 255, 255, 0.45)">
+          Pemrosesan data mentah menjadi informasi bernilai tspasial visual
+          menggunakan algoritma GIS modern.
+        </p>
+        <div class="modul-grid">
+          <div class="modul-card">
+            <div class="modul-num">01 — GEOCODING</div>
+            <h4>Pencarian &amp; Lokasi</h4>
+            <p>
+              Cari hotel by nama, alamat, atau kecamatan. Geocoding real-time
+              via Nominatim OSM API.
+            </p>
+          </div>
+          <div class="modul-card">
+            <div class="modul-num">02 — ROUTING</div>
+            <h4>Petunjuk Arah</h4>
+            <p>
+              Kalkulasi rute mengemudi dari lokasi Anda ke hotel pilihan
+              menggunakan OSRM engine.
+            </p>
+          </div>
+          <div class="modul-card">
+            <div class="modul-num">03 — BUFFER ANALYSIS</div>
+            <h4>Kawasan Sekitar Hotel</h4>
+            <p>
+              Analisis buffer 500m untuk identifikasi restoran, ATM, rumah
+              sakit, dan POI sekitar hotel.
+            </p>
+          </div>
+
+          <div class="modul-card">
+            <div class="modul-num">05 — WSM SCORE</div>
+            <h4>Skor Aksesibilitas Hotel</h4>
+            <p>
+              Penilaian Weighted Sum Model (WSM): kedekatan ke Malioboro (25%),
+              Kraton (20%), Taman Sari (15%), Vredeburg (10%), Alun-alun (10%),
+              dan klasifikasi bintang hotel (20%).
+            </p>
+          </div>
+          <!--<div class="modul-card">
+            <div class="modul-num">06 — EXPORT DATA</div>
+            <h4>Unduh Dataset</h4>
+            <p>
+              Export data spasial dalam format JSON, CSV untuk analisis lanjut
+              menggunakan QGIS atau ArcGIS.
+            </p>
+          </div>-->
+        </div>
+      </section>
+
+      <!-- Stats strip -->
+      <div class="stats-strip">
+        <div class="stat-cell">
+          <span class="stat-num">42</span
+          ><span class="stat-lbl">TOTAL ENTITAS HOTEL</span>
+        </div>
+        <div class="stat-cell">
+          <span class="stat-num">14</span
+          ><span class="stat-lbl">KECAMATAN TERPETAKAN</span>
+        </div>
+        <div class="stat-cell">
+          <span class="stat-num">8.4</span
+          ><span class="stat-lbl">AVG GEODESIGN SCORE</span>
+        </div>
+        <div class="stat-cell">
+          <span class="stat-num">WGS84</span
+          ><span class="stat-lbl">SISTEM KOORDINAT</span>
+        </div>
+      </div>
+    </div>
+    <!-- /s-landing -->
+
+    <!-- ═══════════════════════════════════════════════════════════
+     SCREEN 2 — MAP APP
+    ═══════════════════════════════════════════════════════════ -->
+    <div id="s-map" class="screen">
+      <!-- Header -->
+      <header class="app-header">
+        <div class="app-header-brand">
+          <div class="logo-icon">⊕</div>
+          <div class="app-brand-text">
+            <div class="app-brand-name">YOGYAKARTA WEBGIS</div>
+            <div class="app-brand-sub">PRECISION GIS · LAYER MANAGEMENT</div>
+          </div>
+        </div>
+        <div class="app-header-center">
+          <div class="coord-display">
+            <div class="cd-item">
+              <span class="cd-lbl">COORDINATE SYSTEM</span>
+              <span class="cd-val">WGS 84</span>
+            </div>
+            <div class="cd-item">
+              <span class="cd-lbl">PROJECTION</span>
+              <span class="cd-val">UTM 49S</span>
+            </div>
+            <div class="cd-item">
+              <span class="cd-lbl">CURSOR POSITION</span>
+              <span class="cd-val" id="cursor-coord">—</span>
+            </div>
+          </div>
+        </div>
+        <div class="app-header-right">
+          <button class="hbtn-home" onclick="showScreen('s-landing')">
+            Beranda
+          </button>
+        </div>
+      </header>
+
+      <!-- Sidebar -->
+      <aside class="app-sidebar">
+        <!-- Home/Map nav -->
+        <div class="sb-section" style="padding: 0.25rem 0">
+          <div class="layer-row" style="cursor: default">
+            <div
+              class="layer-row"
+              onclick="showScreen('s-landing')"
+              style="cursor: pointer"
+            >
+              <div class="layer-row-left">
+                <span
+                  style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.5)"
+                  >⌂</span
+                >
+                <span
+                  class="lname"
+                  style="color: rgba(255, 255, 255, 0.9); font-weight: 600"
+                  >Home</span
+                >
+              </div>
+            </div>
+          </div>
+          <div
+            class="layer-row"
+            onclick="resetView()"
+            style="background: rgba(11, 159, 151, 0.12)"
+          >
+            <div class="layer-row-left">
+              <span style="font-size: 0.75rem; color: var(--teal2)">◉</span>
+              <span class="lname" style="color: var(--teal2)">Map View</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Layers -->
+        <div class="sb-section">
+          <div class="sb-sec-title">LAYER MANAGEMENT</div>
+          <div class="layer-row" onclick="toggleLayer('hotels')">
+            <div class="layer-row-left">
+              <div class="ldot" style="background: #0b9f97"></div>
+              <span class="lname">Hotels Yogyakarta</span>
+            </div>
+            <div class="ltoggle" id="toggle-hotels"></div>
+          </div>
+
+          <div class="layer-row" onclick="toggleLayer('admin')">
+            <div class="layer-row-left">
+              <div class="ldot" style="background: #e87d0d"></div>
+              <span class="lname">Batas Administrasi</span>
+            </div>
+            <div class="ltoggle" id="toggle-admin"></div>
+          </div>
+        </div>
+
+        <!-- Hotel list -->
+        <div
+          class="sb-section"
+          style="
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+          "
+        >
+          <div
+            class="sb-sec-title"
+            style="display: flex; justify-content: space-between"
+          >
+            <span>HOTEL ENTITIES</span>
+            <span style="color: rgba(255, 255, 255, 0.5)">42 obj</span>
+          </div>
+          <div class="sb-scroll">
+            <div id="hotel-list"></div>
+          </div>
+        </div>
+
+        <!-- Direction button at bottom -->
+        <div
+          style="
+            padding: 0.65rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+          "
+        >
+          <button
+            onclick="openDirPanel()"
+            style="
+              width: 100%;
+              padding: 0.45rem;
+              background: rgba(11, 159, 151, 0.15);
+              border: 1px solid rgba(11, 159, 151, 0.3);
+              color: #0ccfc5;
+              border-radius: 7px;
+              font-size: 0.78rem;
+              font-family: var(--sans);
+              cursor: pointer;
+              transition: 0.2s;
+              font-weight: 600;
+            "
+          >
+            🗺️ Petunjuk Arah
+          </button>
+        </div>
+      </aside>
+
+      <!-- Map -->
+      <div class="map-wrap">
+        <div id="map"></div>
+
+        <!-- Search bar -->
+        <div class="map-searchbar">
+          <div class="search-input-wrap">
+            <span class="search-icon">🔍</span>
+            <input
+              type="text"
+              id="search-input"
+              class="search-input"
+              placeholder="Cari hotel, alamat, atau kawasan di Yogyakarta..."
+              oninput="onSearchInput(this.value)"
+              onkeydown="if (event.key === 'Escape') clearSearch();"
+            />
+            <button class="search-clear" onclick="clearSearch()">✕</button>
+          </div>
+          <div id="search-drop" class="search-results-drop"></div>
+        </div>
+
+        <!-- Directions panel -->
+        <div class="dir-panel" id="dir-panel">
+          <div class="dir-panel-header">
+            <span class="dir-panel-title">🗺️ PETUNJUK ARAH</span>
+            <button class="dir-close" onclick="closeDirPanel()">✕</button>
+          </div>
+          <div class="dir-panel-body">
+            <div class="dir-field">
+              <div class="dir-lbl">TITIK AWAL</div>
+              <input
+                type="text"
+                id="dir-from"
+                class="dir-input"
+                placeholder="Ketik alamat atau klik peta..."
+              />
+              <div style="display: flex; gap: 0.4rem; margin-top: 0.3rem">
+                <button
+                  class="dir-btn dir-btn-clear"
+                  onclick="useMyLocation()"
+                  style="flex: 1; font-size: 0.73rem"
+                >
+                  📍 Lokasi Saya
+                </button>
+                <button
+                  class="dir-btn dir-btn-clear"
+                  onclick="pickFromMap()"
+                  style="flex: 1; font-size: 0.73rem"
+                >
+                  🖱️ Klik Peta
+                </button>
+              </div>
+            </div>
+            <div class="dir-field">
+              <div class="dir-lbl">TUJUAN (HOTEL)</div>
+              <input
+                type="text"
+                id="dir-to"
+                class="dir-input"
+                placeholder="Nama hotel tujuan..."
+              />
+            </div>
+            <button class="dir-btn dir-btn-go" onclick="getDirections()">
+              🛣️ Hitung Rute
+            </button>
+            <button
+              class="dir-btn dir-btn-clear"
+              onclick="clearRoute()"
+              style="margin-top: 0.3rem"
+            >
+              ✕ Hapus Rute
+            </button>
+            <div class="dir-result" id="dir-result" style="display: none"></div>
+          </div>
+        </div>
+
+        <!-- Surroundings panel -->
+        <div class="surr-panel" id="surr-panel">
+          <div class="surr-card">
+            <div
+              class="surr-header"
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+            >
+              <span>◉ KAWASAN SEKITAR (500m)</span>
+              <span
+                onclick="closeSurroundings()"
+                style="cursor: pointer; opacity: 0.6"
+                >✕</span
+              >
+            </div>
+            <div class="surr-body" id="surr-body"></div>
+          </div>
+        </div>
+
+        <!-- Right tools -->
+        <div class="map-tools-right">
+          <button class="mtbtn" title="Reset View" onclick="resetView()">
+            ⌂
+          </button>
+          <button class="mtbtn" title="Petunjuk Arah" onclick="openDirPanel()">
+            🗺️
+          </button>
+          <button class="mtbtn" title="Analisis" onclick="openAnalysis()">
+            ◎
+          </button>
+          <button
+            class="mtbtn"
+            title="Fullscreen"
+            onclick="document.documentElement.requestFullscreen?.()"
+          >
+            ⛶
+          </button>
+        </div>
+
+        <!-- Status bar -->
+        <div class="map-status">
+          <div class="st-item">EPSG: <span>4326 / OSM</span></div>
+          <div class="st-item">ZOOM: <span id="zoom-level">13</span></div>
+          <div class="st-item">ENTITIES: <span>42 hotels</span></div>
+          <div class="st-item" style="margin-left: auto">
+            © <span>OpenStreetMap</span> contributors · Leaflet 1.9
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /s-map -->
+
+    <!-- ═══════════════════════════════════════════════════════════
+     SCREEN 3 — DETAIL
+          ═══════════════════════════════════════════════════════════ -->
+    <div id="s-detail" class="screen">
+      <div class="detail-left">
+        <!-- Top bar -->
+        <div class="d-topbar">
+          <button class="d-back" onclick="backFromDetail()">⬅ BACK</button>
+          <div class="d-breadcrumb" id="d-breadcrumb">
+            DATABASE <span class="bc-sep">›</span> ACCOMMODATION
+            <span class="bc-sep">›</span>
+            <span>—</span>
+          </div>
+          <button class="d-search-btn">🔍</button>
+        </div>
+
+        <div class="d-main">
+          <div class="d-hotel-name" id="d-hotel-name">—</div>
+
+          <div class="d-badges" id="d-badges">
+            <span class="d-badge d-badge-active">● ACTIVE MARKER</span>
+            <span class="d-badge d-badge-id">—</span>
+          </div>
+
+          <div class="d-actions">
+            <button
+              class="d-action-btn d-action-solid"
+              onclick="backFromDetail()"
+            >
+              ⊕ Lihat di Peta Utama
+            </button>
+          </div>
+
+          <!-- Geospatial Coordinates -->
+          <div class="d-section">
+            <div class="d-sec-title">○ GEOSPATIAL COORDINATES</div>
+            <div class="d-coord-box">
+              <div class="d-coord-lbl">LATITUDE (WGS 84)</div>
+              <div class="d-coord-val" id="d-lat">—</div>
+            </div>
+            <div class="d-coord-box">
+              <div class="d-coord-lbl">LONGITUDE (WGS 84)</div>
+              <div class="d-coord-val" id="d-lng">—</div>
+            </div>
+            <div class="d-coord-meta">
+              <span>Projection: EPSG:4326</span>
+              <span class="d-copy" onclick="copyCoords()">COPY RAW</span>
+            </div>
+          </div>
+
+          <!-- Land-use -->
+          <div class="d-section">
+            <div class="d-sec-title">○ LAND-USE CLASSIFICATION</div>
+            <div class="lu-tags" id="d-landuse"></div>
+          </div>
+
+          <!-- Metadata -->
+          <div class="d-section">
+            <div class="d-sec-title">○ METADATA NOTES</div>
+            <div class="d-meta-box" id="d-meta">—</div>
+          </div>
+
+          <!-- Proximity to landmarks -->
+          <div class="d-section">
+            <div class="d-sec-title">○ PROXIMITY TO LANDMARKS</div>
+            <div class="prox-lm" id="d-prox"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mini map -->
+      <div class="detail-map-right">
+        <div id="detail-map"></div>
+        <div class="detail-map-info">
+          SCALE <span id="d-scale">1 : 5,000</span> &nbsp;&nbsp; BUFFER
+          <span>500 m</span>
+        </div>
+      </div>
+    </div>
+    <!-- /s-detail -->
+
+    <!-- Toast -->
+    <div id="toast"></div>
+
+    <!-- Scripts -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+      // Avg capacity
+      window.addEventListener("DOMContentLoaded", () => {
+        const el = document.getElementById("avg-cap");
+        if (el && typeof HOTELS !== "undefined") {
+          const avg = Math.round(
+            HOTELS.reduce((s, h) => s + h.capacity, 0) / HOTELS.length,
+          );
+          el.textContent = avg + "%";
+        }
+      });
+    </script>
+  </body>
+</html>
