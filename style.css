@@ -2422,3 +2422,210 @@ body {
     height: 56px !important;
   }
 }
+/* ================= MOBILE CLEAN RESPONSIVE MAP ================= */
+@media (max-width: 768px) {
+  :root {
+    --sheet-height: 28vh;
+  }
+
+  html,
+  body {
+    overflow: hidden !important;
+    height: 100% !important;
+  }
+
+  .mobile-sheet-controls {
+    display: none !important;
+  }
+
+  .app-header {
+    height: 64px !important;
+    min-height: 64px !important;
+    padding: 0.55rem 0.75rem !important;
+    z-index: 10000 !important;
+  }
+
+  .app-header-center {
+    display: none !important;
+  }
+
+  .app-brand-name {
+    font-size: 0.72rem !important;
+    letter-spacing: 0.14em !important;
+  }
+
+  .app-brand-sub {
+    font-size: 0.62rem !important;
+  }
+
+  .map-wrap,
+  #map {
+    left: 0 !important;
+    top: 64px !important;
+    width: 100% !important;
+    height: calc(100vh - 64px) !important;
+  }
+
+  .app-sidebar {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    top: auto !important;
+    width: 100% !important;
+    height: var(--sheet-height) !important;
+    max-height: 82vh !important;
+    min-height: 12vh !important;
+    z-index: 9999 !important;
+    border-radius: 24px 24px 0 0 !important;
+    overflow-y: auto !important;
+    padding-top: 0 !important;
+    transition: height 0.18s ease !important;
+    box-shadow: 0 -16px 38px rgba(0, 0, 0, 0.28) !important;
+  }
+
+  .sheet-handle {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    height: 34px;
+    background: var(--sb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+  }
+
+  .sheet-handle::before {
+    content: "";
+    width: 54px;
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.38);
+  }
+
+  .sb-section {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .search-box {
+    margin: 0.75rem !important;
+    width: calc(100% - 1.5rem) !important;
+  }
+
+  .leaflet-popup {
+    margin-bottom: calc(var(--sheet-height) + 8px) !important;
+  }
+
+  .leaflet-popup-content-wrapper {
+    border-radius: 16px !important;
+  }
+
+  .leaflet-popup-content {
+    width: 255px !important;
+    max-width: 255px !important;
+    margin: 0 !important;
+  }
+
+  .p-card,
+  .popup-card,
+  .hotel-popup {
+    max-height: 48vh !important;
+    overflow-y: auto !important;
+    border-radius: 16px !important;
+  }
+
+  .p-card {
+    padding: 0.8rem !important;
+  }
+
+  .p-title,
+  .popup-title,
+  .hotel-title,
+  .popup-card h2,
+  .popup-card h3 {
+    font-size: 1rem !important;
+    line-height: 1.1 !important;
+    max-width: 210px !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .p-sub,
+  .popup-sub {
+    font-size: 0.72rem !important;
+  }
+
+  .p-info,
+  .popup-info {
+    font-size: 0.72rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .wsm-card,
+  .score-card,
+  .analysis-card {
+    padding: 0.55rem !important;
+    margin-top: 0.5rem !important;
+  }
+
+  .wsm-card .mono,
+  .wsm-card small {
+    font-size: 0.62rem !important;
+  }
+
+  .wsm-score,
+  .score-number,
+  .popup-score {
+    font-size: 1.35rem !important;
+  }
+
+  .wsm-row,
+  .score-row {
+    font-size: 0.62rem !important;
+    gap: 0.3rem !important;
+  }
+
+  .p-actions,
+  .popup-actions,
+  .hotel-actions,
+  .popup-buttons {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.45rem !important;
+    margin-top: 0.55rem !important;
+  }
+
+  .p-actions button,
+  .p-actions a,
+  .popup-actions button,
+  .popup-actions a,
+  .hotel-actions button,
+  .hotel-actions a {
+    height: 36px !important;
+    font-size: 0.72rem !important;
+    border-radius: 9px !important;
+  }
+
+  .surround-panel,
+  .nearby-panel,
+  .buffer-panel,
+  #surround-panel {
+    position: fixed !important;
+    left: 12px !important;
+    right: 12px !important;
+    bottom: calc(var(--sheet-height) + 12px) !important;
+    width: auto !important;
+    max-height: 28vh !important;
+    overflow-y: auto !important;
+    z-index: 10001 !important;
+    border-radius: 14px !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,.25) !important;
+  }
+
+  .leaflet-control-zoom,
+  .leaflet-control-layers {
+    margin-bottom: calc(var(--sheet-height) + 16px) !important;
+  }
+}
