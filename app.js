@@ -2178,3 +2178,31 @@ function buildLpFooter() {
   });
   ctx.globalCompositeOperation = "source-over";
 }
+/* ================= MOBILE BOTTOM SHEET CONTROLS ================= */
+function initMobileSheetControls() {
+  if (document.querySelector(".mobile-sheet-controls")) return;
+
+  const controls = document.createElement("div");
+  controls.className = "mobile-sheet-controls";
+  controls.innerHTML = `
+    <button onclick="setSheetMode('small')">Min</button>
+    <button onclick="setSheetMode('half')">Half</button>
+    <button onclick="setSheetMode('full')">Full</button>
+    <button onclick="setSheetMode('hide')">Hide</button>
+  `;
+  document.body.appendChild(controls);
+}
+
+function setSheetMode(mode) {
+  document.body.classList.remove("sidebar-small", "sidebar-full", "sidebar-hide");
+
+  if (mode === "small") document.body.classList.add("sidebar-small");
+  if (mode === "full") document.body.classList.add("sidebar-full");
+  if (mode === "hide") document.body.classList.add("sidebar-hide");
+
+  setTimeout(() => {
+    if (map) map.invalidateSize();
+  }, 300);
+}
+
+window.addEventListener("load", initMobileSheetControls);
