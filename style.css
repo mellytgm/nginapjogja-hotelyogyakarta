@@ -3296,66 +3296,85 @@ body {
     grid-template-columns: 1fr 1fr !important;
   }
 }
-/* =========================
-   FIX LANDING MOBILE FINAL
-   ========================= */
-@media (max-width:768px){
-
-  /* inventarisasi data */
-  .coverage-grid{
-    display:grid !important;
-    grid-template-columns:1fr !important;
-    gap:16px !important;
+/* FIX FINAL LANDING PAGE MOBILE */
+@media (max-width: 768px) {
+  #s-landing {
+    height: 100dvh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: block !important;
+    background: var(--bg) !important;
   }
 
-  /* dark card turun ke bawah */
-  .dark-cards{
-    display:grid !important;
-    grid-template-columns:1fr !important;
-    gap:16px !important;
-  }
-
-  /* modul analisis spasial */
-  .modul-grid{
-    display:grid !important;
-    grid-template-columns:1fr !important;
-    gap:16px !important;
-  }
-
-  .modul-card{
-    width:100% !important;
-  }
-
-  /* statistik bawah */
-  .stats-strip{
-    display:grid !important;
-    grid-template-columns:1fr 1fr !important;
-    gap:12px !important;
-    padding:24px 16px !important;
-  }
-
-  .stat-cell{
-    min-width:0 !important;
-  }
-
-  .stat-num{
-    font-size:1.3rem !important;
-  }
-
-  .stat-lbl{
-    font-size:.58rem !important;
-    line-height:1.4 !important;
-  }
-
-  /* section landing */
   .lp-section,
-  .lp-section-dark{
-    padding:32px 16px !important;
+  .lp-section-dark,
+  .stats-strip {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: unset !important;
+    overflow: visible !important;
+    display: block !important;
+    clear: both !important;
   }
 
-  .section-title{
-    font-size:1.8rem !important;
-    line-height:1.2 !important;
+  .lp-section {
+    padding: 42px 16px !important;
+    background: var(--bg) !important;
   }
 
+  .lp-section-dark {
+    padding: 42px 16px !important;
+    background: var(--sb) !important;
+  }
+
+  .coverage-grid,
+  .dark-cards,
+  .modul-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    gap: 16px !important;
+    margin-top: 18px !important;
+  }
+
+  .cov-card,
+  .dark-card,
+  .modul-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    overflow: hidden !important;
+  }
+
+  .section-title {
+    font-size: 1.75rem !important;
+    line-height: 1.15 !important;
+    margin-bottom: 10px !important;
+  }
+
+  .section-desc {
+    font-size: .85rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 18px !important;
+  }
+
+  .modul-card h4 {
+    font-size: 1rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .modul-card p {
+    font-size: .82rem !important;
+    line-height: 1.6 !important;
+  }
+
+  .stats-strip {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+    padding: 24px 16px 40px !important;
+    background: #fff !important;
+  }
 }
