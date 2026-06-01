@@ -3157,3 +3157,173 @@ body {
   .app-brand-name { font-size: 0.58rem !important; }
   .lp-nav .nav-links a { font-size: 0.63rem !important; }
 }
+
+
+/* ============================================================
+   FINAL LANDING MOBILE STACK FIX — Modul & Statistik
+   Override paling akhir agar section bawah tidak kepotong di HP
+   ============================================================ */
+@media screen and (max-width: 768px) {
+  /* Paksa semua elemen landing tidak melebar melebihi viewport */
+  #s-landing,
+  #s-landing * {
+    box-sizing: border-box !important;
+  }
+
+  #s-landing {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+
+  #s-landing .lp-section,
+  #s-landing .lp-section-dark {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    padding: 2.2rem 1rem !important;
+    overflow-x: hidden !important;
+  }
+
+  #s-landing .section-title {
+    font-size: 1.45rem !important;
+    line-height: 1.2 !important;
+    max-width: 100% !important;
+    overflow-wrap: break-word !important;
+  }
+
+  #s-landing .section-desc {
+    font-size: 0.82rem !important;
+    line-height: 1.6 !important;
+    max-width: 100% !important;
+  }
+
+  /* Bagian modul analisis spasial WAJIB 1 kolom, bukan melebar 3 kolom */
+  #s-landing .modul-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.95rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 1.1rem 0 0 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  #s-landing .modul-card {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    min-height: auto !important;
+    height: auto !important;
+    padding: 1rem !important;
+    border-radius: 14px !important;
+    overflow: visible !important;
+  }
+
+  #s-landing .modul-card .modul-num {
+    font-size: 0.66rem !important;
+    line-height: 1.45 !important;
+    letter-spacing: 0.11em !important;
+    white-space: normal !important;
+  }
+
+  #s-landing .modul-card h4 {
+    font-size: 1rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0.45rem !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+  }
+
+  #s-landing .modul-card p {
+    font-size: 0.82rem !important;
+    line-height: 1.65 !important;
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+  }
+
+  /* Coverage/table tidak boleh melebar */
+  #s-landing .coverage-grid,
+  #s-landing .dark-cards {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 1rem !important;
+    overflow-x: hidden !important;
+  }
+
+  #s-landing .cov-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+  }
+
+  #s-landing .prox-table {
+    min-width: 0 !important;
+    width: 100% !important;
+    font-size: 0.68rem !important;
+  }
+
+  #s-landing .prox-table th,
+  #s-landing .prox-table td {
+    padding: 0.35rem 0.42rem !important;
+  }
+
+  /* Statistik bawah dibuat 2 kolom dan tidak kepotong kanan */
+  #s-landing .stats-strip {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    gap: 0.85rem !important;
+    padding: 1.25rem 1rem 5.5rem !important;
+    overflow-x: hidden !important;
+  }
+
+  #s-landing .stat-cell {
+    min-width: 0 !important;
+    text-align: center !important;
+  }
+
+  #s-landing .stat-num {
+    font-size: 1.55rem !important;
+    line-height: 1.05 !important;
+    max-width: 100% !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  #s-landing .stat-lbl {
+    display: block !important;
+    font-size: 0.58rem !important;
+    line-height: 1.45 !important;
+    letter-spacing: 0.08em !important;
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+  }
+}
+
+@media screen and (max-width: 390px) {
+  #s-landing .lp-section,
+  #s-landing .lp-section-dark {
+    padding-left: 0.9rem !important;
+    padding-right: 0.9rem !important;
+  }
+
+  #s-landing .modul-card {
+    padding: 0.9rem !important;
+  }
+
+  #s-landing .modul-card h4 {
+    font-size: 0.96rem !important;
+  }
+
+  #s-landing .modul-card p {
+    font-size: 0.78rem !important;
+  }
+}
