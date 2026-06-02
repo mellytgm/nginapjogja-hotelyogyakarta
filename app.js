@@ -777,18 +777,20 @@ async function getDirections() {
       // Gambar rute di peta
       routeLayer = L.polyline(coords, {
   color: "#1A73E8",
-  weight: window.innerWidth <= 768 ? 5 : 6,
+  weight: 6,
   opacity: 0.9,
-  smoothFactor: 2,
-  interactive: false
+  smoothFactor: 1,
+  interactive: false,
 }).addTo(map);
 
-      // Shadow rute (efek Google Maps)
-      const shadowRoute = L.polyline(coords, {
+routeMarkers.push(routeLayer);
+
+     // Shadow rute
+const shadowRoute = L.polyline(coords, {
   color: "#0D47A1",
   weight: 8,
   opacity: 0.18,
-  interactive: false
+  interactive: false,
 }).addTo(map);
 
 routeMarkers.push(shadowRoute);
