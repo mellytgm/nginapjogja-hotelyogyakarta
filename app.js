@@ -776,18 +776,22 @@ async function getDirections() {
 
       // Gambar rute di peta
       routeLayer = L.polyline(coords, {
-        color: "#1A73E8",
-        weight: 6,
-        opacity: 0.85,
-      }).addTo(map);
+  color: "#1A73E8",
+  weight: window.innerWidth <= 768 ? 5 : 6,
+  opacity: 0.9,
+  smoothFactor: 2,
+  interactive: false
+}).addTo(map);
 
       // Shadow rute (efek Google Maps)
-      L.polyline(coords, {
-        color: "#0D47A1",
-        weight: 8,
-        opacity: 0.25,
-      }).addTo(map);
-      routeMarkers.push(routeLayer);
+      const shadowRoute = L.polyline(coords, {
+  color: "#0D47A1",
+  weight: 8,
+  opacity: 0.18,
+  interactive: false
+}).addTo(map);
+
+routeMarkers.push(shadowRoute);
 
       // Marker A dan B
       const mkA = L.marker(dirFrom, {
@@ -805,8 +809,13 @@ async function getDirections() {
         .bindPopup("🏨 <b>Tujuan</b>");
       routeMarkers.push(mkA, mkB);
 
-      map.fitBounds(routeLayer.getBounds(), { padding: [60, 60] });
-
+      map.fitBounds(routeLayer.getBounds(), {
+  paddingTopLeft: [20, 100],
+  paddingBottomRight: [20, 180],
+  animate: true,
+  duration: 0.8,
+  maxZoom: 16
+});
       const result = document.getElementById("dir-result");
       result.innerHTML = `🛣️ <b>${dist} km</b> &nbsp;·&nbsp; ⏱️ <b>${time} menit</b> mengemudi`;
       result.style.display = "block";
