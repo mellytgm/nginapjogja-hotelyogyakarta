@@ -28,8 +28,11 @@ let markerMap = {},
   selectedHotelId = null;
 let detailMap = null,
   detailMapInited = false;
-let routeLayer = null,
+let routeLayer   = null,
   routeMarkers = [];
+let routeLatLngs = null;  // Array L.LatLng — disimpan untuk redraw
+let routeCanvas  = null;  // Canvas kustom overlay di atas #map
+let routeCtx     = null;
 let radiusLayer = null,
   surroundLayer = null;
 let dirMode = false,
@@ -91,6 +94,48 @@ function initMap() {
   clusterGroup.addTo(map);
   buildSidebarList();
   // loadYogyaBoundary();
+
+  /* ── Route Canvas — gambar rute di canvas kustom, bukan Leaflet overlay ── */
+  routeCanvas = document.createElement("canvas");
+  routeCanvas.style.cssText = [
+    "position:absolute", "top:0", "left:0",
+    "width:100%", "height:100%",
+    "pointer-events:none",
+    "z-index:450",
+  ].join(";");
+  document.getElementById("map").appendChild(routeCanvas);
+  routeCtx = routeCanvas.getContext("2d");
+
+  /* Redraw setiap frame saat pan/zoom — ini yang bikin rute tidak geser */
+  function redrawRouteCanvas() {
+    if (!routeCtx || !routeLatLngs) return;
+    const sz = map.getSize();
+    routeCanvas.width  = sz.x;
+    routeCanvas.height = sz.y;
+    routeCtx.clearRect(0, 0, sz.x, sz.y);
+
+    /* Path rute */
+    routeCtx.beginPath();
+    routeCtx.strokeStyle = "#1A73E8";
+    routeCtx.lineWidth   = 5;
+    routeCtx.lineCap     = "round";
+    routeCtx.lineJoin    = "round";
+    routeCtx.globalAlpha = 0.92;
+    routeLatLngs.forEach((ll, i) => {
+      const pt = map.latLngToContainerPoint(ll);
+      i === 0 ? routeCtx.moveTo(pt.x, pt.y) : routeCtx.lineTo(pt.x, pt.y);
+    });
+    routeCtx.stroke();
+    routeCtx.globalAlpha = 1;
+  }
+
+  /* Ekspor fungsi agar bisa dipanggil dari getDirections */
+  window._redrawRouteCanvas = redrawRouteCanvas;
+
+  map.on("move",    redrawRouteCanvas);
+  map.on("zoom",    redrawRouteCanvas);
+  map.on("zoomend", redrawRouteCanvas);
+  map.on("resize",  redrawRouteCanvas);
 
   map.on("mousemove", (e) => {
     const el = document.getElementById("cursor-coord");
@@ -747,111 +792,70 @@ async function getDirections() {
 
   toast("🛣️ Menghitung rute...");
 
-  // Hapus rute lama (tapi simpan dirFrom/dirTo)
-  if (routeLayer) {
-    map.removeLayer(routeLayer);
-    routeLayer = null;
-  }
-  routeMarkers.forEach((m) => map.removeLayer(m));
+  /* Hapus rute lama TANPA reset dirFrom/dirTo */
+  routeLatLngs = null;
+  if (routeCtx) { const sz = map.getSize(); routeCanvas.width = sz.x; routeCanvas.height = sz.y; routeCtx.clearRect(0,0,sz.x,sz.y); }
+  if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
+  routeMarkers.forEach(m => { try { map.removeLayer(m); } catch {} });
   routeMarkers = [];
 
-  // Coba beberapa OSRM endpoint (fallback)
   const OSRM_URLS = [
     `https://router.project-osrm.org/route/v1/driving/${dirFrom[1]},${dirFrom[0]};${dirTo[1]},${dirTo[0]}?overview=full&geometries=geojson`,
     `https://routing.openstreetmap.de/routed-car/route/v1/driving/${dirFrom[1]},${dirFrom[0]};${dirTo[1]},${dirTo[0]}?overview=full&geometries=geojson`,
+    `https://router.project-osrm.org/route/v1/foot/${dirFrom[1]},${dirFrom[0]};${dirTo[1]},${dirTo[0]}?overview=full&geometries=geojson`,
+    `https://routing.openstreetmap.de/routed-foot/route/v1/foot/${dirFrom[1]},${dirFrom[0]};${dirTo[1]},${dirTo[0]}?overview=full&geometries=geojson`,
   ];
 
   let success = false;
   for (const url of OSRM_URLS) {
     try {
-      const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+      const ctrl = new AbortController();
+      const tid  = setTimeout(() => ctrl.abort(), 12000);
+      const res  = await fetch(url, { signal: ctrl.signal });
+      clearTimeout(tid);
       if (!res.ok) continue;
       const data = await res.json();
-      if (data.code !== "Ok" || !data.routes.length) continue;
+      if (data.code !== "Ok" || !data.routes?.length) continue;
 
-      const route = data.routes[0];
-      const coords = route.geometry.coordinates.map((c) => [c[1], c[0]]);
-      const dist = (route.distance / 1000).toFixed(1);
-      const time = Math.round(route.duration / 60);
+      const route  = data.routes[0];
+      const dist   = (route.distance / 1000).toFixed(1);
+      const time   = Math.round(route.duration / 60);
+      const isFoot = url.includes("foot");
 
-      // Gambar rute di peta
-      routeLayer = L.polyline(coords, {
-  color: "#1A73E8",
-  weight: 6,
-  opacity: 0.9,
-  smoothFactor: 1,
-  interactive: false,
-}).addTo(map);
+      /* Simpan koordinat sebagai L.LatLng — canvas redraw pakai ini */
+      routeLatLngs = route.geometry.coordinates.map(c => L.latLng(c[1], c[0]));
 
-routeMarkers.push(routeLayer);
+      /* Gambar pertama kali */
+      if (window._redrawRouteCanvas) window._redrawRouteCanvas();
 
-     // Shadow rute
-const shadowRoute = L.polyline(coords, {
-  color: "#0D47A1",
-  weight: 8,
-  opacity: 0.18,
-  interactive: false,
-}).addTo(map);
+      /* Fit bounds pakai LatLngBounds */
+      const bounds = L.latLngBounds(routeLatLngs);
 
-routeMarkers.push(shadowRoute);
-
-      // Marker A dan B
-      const mkA = L.marker(dirFrom, {
-        icon: pinIcon("A", "#16A34A"),
-        zIndexOffset: 1000,
-      })
-        .addTo(map)
-        .bindPopup("📍 <b>Titik Awal</b>")
-        .openPopup();
-      const mkB = L.marker(dirTo, {
-        icon: pinIcon("B", "#DC2626"),
-        zIndexOffset: 1000,
-      })
-        .addTo(map)
-        .bindPopup("🏨 <b>Tujuan</b>");
+      /* Marker A & B — tetap pakai Leaflet marker (tidak terpengaruh masalah pan) */
+      const mkA = L.marker(dirFrom, { icon: pinIcon("A","#16A34A"), zIndexOffset:1000 })
+        .addTo(map).bindPopup("📍 <b>Titik Awal</b>").openPopup();
+      const mkB = L.marker(dirTo, { icon: pinIcon("B","#DC2626"), zIndexOffset:1000 })
+        .addTo(map).bindPopup("🏨 <b>Tujuan</b>");
       routeMarkers.push(mkA, mkB);
 
-      map.fitBounds(routeLayer.getBounds(), {
-  paddingTopLeft: [20, 100],
-  paddingBottomRight: [20, 180],
-  animate: true,
-  duration: 0.8,
-  maxZoom: 16
-});
-      const result = document.getElementById("dir-result");
-      result.innerHTML = `🛣️ <b>${dist} km</b> &nbsp;·&nbsp; ⏱️ <b>${time} menit</b> mengemudi`;
-      result.style.display = "block";
-      toast(`✅ Rute ditemukan: ${dist} km · ${time} menit`);
+      map.fitBounds(bounds, {
+        paddingTopLeft:[20,110], paddingBottomRight:[20,170],
+        maxZoom:16, animate:true, duration:0.7,
+      });
+
+      document.getElementById("dir-result").innerHTML =
+        `${isFoot?"🚶":"🛣️"} <b>${dist} km</b> &nbsp;·&nbsp; ⏱️ <b>${time} menit</b> ${isFoot?"berjalan kaki":"mengemudi"}`;
+      document.getElementById("dir-result").style.display = "block";
+      toast(`✅ Rute: ${dist} km · ${time} menit`);
       success = true;
       break;
-    } catch (e) {
-      continue; // coba endpoint berikutnya
-    }
+    } catch { continue; }
   }
 
   if (!success) {
-    // Fallback: gambar garis lurus
-    routeLayer = L.polyline([dirFrom, dirTo], {
-      color: "#1A73E8",
-      weight: 4,
-      opacity: 0.7,
-      dashArray: "10,8",
-    }).addTo(map);
-    routeMarkers.push(routeLayer);
-    const mkA = L.marker(dirFrom, { icon: pinIcon("A", "#16A34A") })
-      .addTo(map)
-      .bindPopup("📍 Titik Awal")
-      .openPopup();
-    const mkB = L.marker(dirTo, { icon: pinIcon("B", "#DC2626") })
-      .addTo(map)
-      .bindPopup("🏨 Tujuan");
-    routeMarkers.push(mkA, mkB);
-    map.fitBounds(routeLayer.getBounds(), { padding: [60, 60] });
-    const d = (map.distance(dirFrom, dirTo) / 1000).toFixed(1);
-    const result = document.getElementById("dir-result");
-    result.innerHTML = `📏 Jarak lurus: <b>${d} km</b> <small style="color:#D97706">(rute jalan tidak tersedia saat ini)</small>`;
-    result.style.display = "block";
-    toast("⚠️ Server routing sibuk, menampilkan jarak lurus");
+    document.getElementById("dir-result").innerHTML = `⚠️ Server routing tidak merespons. Coba lagi.`;
+    document.getElementById("dir-result").style.display = "block";
+    toast("⚠️ Server routing tidak tersedia.");
   }
 }
 
@@ -866,25 +870,18 @@ async function geocode(q) {
 }
 
 function clearRoute() {
-  if (routeLayer) {
-    map.removeLayer(routeLayer);
-    routeLayer = null;
+  routeLatLngs = null;
+  if (routeCtx && routeCanvas) {
+    routeCtx.clearRect(0, 0, routeCanvas.width, routeCanvas.height);
   }
-  routeMarkers.forEach((m) => {
-    try {
-      map.removeLayer(m);
-    } catch {}
-  });
+  if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
+  routeMarkers.forEach(m => { try { map.removeLayer(m); } catch {} });
   routeMarkers = [];
-  dirFrom = null;
-  dirTo = null;
+  dirFrom = null; dirTo = null;
   document.getElementById("dir-from").value = "";
-  document.getElementById("dir-to").value = "";
+  document.getElementById("dir-to").value   = "";
   const r = document.getElementById("dir-result");
-  if (r) {
-    r.innerHTML = "";
-    r.style.display = "none";
-  }
+  if (r) { r.innerHTML = ""; r.style.display = "none"; }
   toast("✕ Rute dihapus");
 }
 
