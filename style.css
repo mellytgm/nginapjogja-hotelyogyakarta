@@ -759,7 +759,7 @@ body {
 
 /* Map */
 .map-wrap {
-  position: absolute;  /* bukan fixed — Leaflet butuh ini agar overlay layer tidak drift */
+  position: absolute;
   top: var(--header);
   left: var(--sidebar);
   right: 0;
