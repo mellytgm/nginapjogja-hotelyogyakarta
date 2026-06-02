@@ -30,8 +30,8 @@ let detailMap = null,
   detailMapInited = false;
 let routeLayer   = null,
   routeMarkers = [];
-let routeLatLngs = null;  // Array L.LatLng — disimpan untuk redraw
-let routeCanvas  = null;  // Canvas kustom overlay di atas #map
+let routeLatLngs = null; // simpan LatLng untuk redraw
+let routeCanvas  = null; // canvas kustom di atas #map
 let routeCtx     = null;
 let radiusLayer = null,
   surroundLayer = null;
@@ -95,26 +95,24 @@ function initMap() {
   buildSidebarList();
   // loadYogyaBoundary();
 
-  /* ── Route Canvas — gambar rute di canvas kustom, bukan Leaflet overlay ── */
+  /* ── Canvas Rute Kustom ──────────────────────────────────────
+     Menggambar rute langsung ke canvas menggunakan
+     map.latLngToContainerPoint() — tidak bergantung pada
+     Leaflet overlay pane, sehingga tidak geser saat pan/zoom.
+  ─────────────────────────────────────────────────────────── */
   routeCanvas = document.createElement("canvas");
-  routeCanvas.style.cssText = [
-    "position:absolute", "top:0", "left:0",
-    "width:100%", "height:100%",
-    "pointer-events:none",
-    "z-index:450",
-  ].join(";");
+  routeCanvas.id = "route-canvas";
+  routeCanvas.style.cssText =
+    "position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:450;";
   document.getElementById("map").appendChild(routeCanvas);
   routeCtx = routeCanvas.getContext("2d");
 
-  /* Redraw setiap frame saat pan/zoom — ini yang bikin rute tidak geser */
   function redrawRouteCanvas() {
-    if (!routeCtx || !routeLatLngs) return;
+    if (!routeCtx || !routeLatLngs || !routeLatLngs.length) return;
     const sz = map.getSize();
     routeCanvas.width  = sz.x;
     routeCanvas.height = sz.y;
     routeCtx.clearRect(0, 0, sz.x, sz.y);
-
-    /* Path rute */
     routeCtx.beginPath();
     routeCtx.strokeStyle = "#1A73E8";
     routeCtx.lineWidth   = 5;
@@ -129,13 +127,12 @@ function initMap() {
     routeCtx.globalAlpha = 1;
   }
 
-  /* Ekspor fungsi agar bisa dipanggil dari getDirections */
-  window._redrawRouteCanvas = redrawRouteCanvas;
-
+  /* Redraw setiap frame pan/zoom — kunci agar tidak geser */
   map.on("move",    redrawRouteCanvas);
   map.on("zoom",    redrawRouteCanvas);
   map.on("zoomend", redrawRouteCanvas);
   map.on("resize",  redrawRouteCanvas);
+  window._redrawRouteCanvas = redrawRouteCanvas;
 
   map.on("mousemove", (e) => {
     const el = document.getElementById("cursor-coord");
@@ -794,7 +791,12 @@ async function getDirections() {
 
   /* Hapus rute lama TANPA reset dirFrom/dirTo */
   routeLatLngs = null;
-  if (routeCtx) { const sz = map.getSize(); routeCanvas.width = sz.x; routeCanvas.height = sz.y; routeCtx.clearRect(0,0,sz.x,sz.y); }
+  if (routeCtx && routeCanvas) {
+    const sz = map.getSize();
+    routeCanvas.width  = sz.x;
+    routeCanvas.height = sz.y;
+    routeCtx.clearRect(0, 0, sz.x, sz.y);
+  }
   if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
   routeMarkers.forEach(m => { try { map.removeLayer(m); } catch {} });
   routeMarkers = [];
@@ -822,23 +824,20 @@ async function getDirections() {
       const time   = Math.round(route.duration / 60);
       const isFoot = url.includes("foot");
 
-      /* Simpan koordinat sebagai L.LatLng — canvas redraw pakai ini */
+      /* Simpan sebagai L.LatLng — canvas redraw pakai ini */
       routeLatLngs = route.geometry.coordinates.map(c => L.latLng(c[1], c[0]));
 
       /* Gambar pertama kali */
       if (window._redrawRouteCanvas) window._redrawRouteCanvas();
 
-      /* Fit bounds pakai LatLngBounds */
-      const bounds = L.latLngBounds(routeLatLngs);
-
-      /* Marker A & B — tetap pakai Leaflet marker (tidak terpengaruh masalah pan) */
+      /* Marker A & B — Leaflet marker tetap aman */
       const mkA = L.marker(dirFrom, { icon: pinIcon("A","#16A34A"), zIndexOffset:1000 })
         .addTo(map).bindPopup("📍 <b>Titik Awal</b>").openPopup();
       const mkB = L.marker(dirTo, { icon: pinIcon("B","#DC2626"), zIndexOffset:1000 })
         .addTo(map).bindPopup("🏨 <b>Tujuan</b>");
       routeMarkers.push(mkA, mkB);
 
-      map.fitBounds(bounds, {
+      map.fitBounds(L.latLngBounds(routeLatLngs), {
         paddingTopLeft:[20,110], paddingBottomRight:[20,170],
         maxZoom:16, animate:true, duration:0.7,
       });
